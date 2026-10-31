@@ -1,0 +1,38 @@
+# Gradle
+.gradle/
+build/
+out/
+bin/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Minecraft
+run/
+logs/
+*.log
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Antigravity
+.gemini/
+
