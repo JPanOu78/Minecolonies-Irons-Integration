@@ -1,0 +1,29 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 4,
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "count": 3,
+      "item": "minecraft:book"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/mage",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:amethyst_shard",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 1
+    }
+  ],
+  "researchLevel": 1,
+  "sortOrder": 2
+}

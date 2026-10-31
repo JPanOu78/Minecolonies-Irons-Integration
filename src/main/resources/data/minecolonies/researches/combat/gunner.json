@@ -1,0 +1,29 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 5,
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "count": 5,
+      "item": "minecraft:gunpowder"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/gunner",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:iron_ingot",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 1
+    }
+  ],
+  "researchLevel": 1,
+  "sortOrder": 1
+}

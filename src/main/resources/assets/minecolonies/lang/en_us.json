@@ -1,0 +1,15 @@
+{
+  "com.minecolonies.job.gunner": "Gunner",
+  "com.minecolonies.coremod.gui.workerhuts.gunner": "Gunner",
+  "minecolonies:gunner.job.desc": "Equipped with firearms from Iron's Artifice. Delivers devastating ranged volleys and kites enemies.",
+  "com.minecolonies.research.combat.gunner.name": "Firearms Training",
+  "com.minecolonies.research.combat.gunner.subtitle": "Introduce gunpowder weaponry to the colony defense.",
+  "com.minecolonies.research.effects.gunner.description": "Unlocks Gunner as a new Guard Type (Firearms) in Guard Towers.",
+
+  "com.minecolonies.job.mage": "Mage",
+  "com.minecolonies.coremod.gui.workerhuts.mage": "Mage",
+  "minecolonies:mage.job.desc": "Harnesses arcane arts from Iron's Spells. Casts offensive and supportive spells to protect the colony.",
+  "com.minecolonies.research.combat.mage.name": "Arcane Mastery",
+  "com.minecolonies.research.combat.mage.subtitle": "Train colony guards in the arts of spellcasting.",
+  "com.minecolonies.research.effects.mage.description": "Unlocks Mage as a new Guard Type (Spellbooks) in Guard Towers."
+}

@@ -1,0 +1,15 @@
+{
+  "com.minecolonies.job.gunner": "พลปืน (Gunner)",
+  "com.minecolonies.coremod.gui.workerhuts.gunner": "พลปืน",
+  "minecolonies:gunner.job.desc": "สวมใส่อาวุธปืนจาก Iron's Artifice ยิงกระสุนชุดรุนแรงระยะไกลและถอยรักษาระยะ",
+  "com.minecolonies.research.combat.gunner.name": "การฝึกใช้อาวุธปืน",
+  "com.minecolonies.research.combat.gunner.subtitle": "นำอาวุธดินปืนเข้ามาใช้ในการป้องกันอาณานิคม",
+  "com.minecolonies.research.effects.gunner.description": "ปลดล็อคอาชีพ พลปืน (Gunner) ในป้อมยาม (Guard Tower)",
+
+  "com.minecolonies.job.mage": "จอมเวท (Mage)",
+  "com.minecolonies.coremod.gui.workerhuts.mage": "จอมเวท",
+  "minecolonies:mage.job.desc": "ควบคุมพลังเวทมนตร์จาก Iron's Spells ร่ายคาถาโจมตีและสนับสนุนเพื่อปกป้องเมือง",
+  "com.minecolonies.research.combat.mage.name": "ความเชี่ยวชาญเวทมนตร์",
+  "com.minecolonies.research.combat.mage.subtitle": "ฝึกฝนทหารยามในศาสตร์แห่งการร่ายคาถา",
+  "com.minecolonies.research.effects.mage.description": "ปลดล็อคอาชีพ จอมเวท (Mage) ในป้อมยาม (Guard Tower)"
+}
