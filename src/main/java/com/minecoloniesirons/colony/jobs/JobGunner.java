@@ -24,4 +24,8 @@ public class JobGunner extends AbstractJobGuard<JobGunner> {
         // Guard uniform for standalone Minecolonies without MCA
         return ModModelTypes.ARCHER_GUARD_ID;
     }
+
+    public com.minecolonies.api.equipment.registry.EquipmentTypeEntry getEquipmentType() {
+        return ModIronsEquipmentTypes.GUN.get();
+    }
 }

@@ -24,4 +24,8 @@ public class JobMage extends AbstractJobGuard<JobMage> {
         // Cleric / Healer uniform for standalone Minecolonies without MCA
         return ModModelTypes.HEALER_ID;
     }
+
+    public com.minecolonies.api.equipment.registry.EquipmentTypeEntry getEquipmentType() {
+        return ModIronsEquipmentTypes.SPELL_FOCUS.get();
+    }
 }

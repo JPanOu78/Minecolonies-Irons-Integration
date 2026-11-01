@@ -12,8 +12,6 @@
 
   "minecolonies:gunner.job.desc": "Equipped with firearms from Iron's Artifice. Delivers devastating ranged volleys and kites enemies.",
   "minecolonies:mage.job.desc": "Harnesses arcane arts from Iron's Spells. Casts offensive and supportive spells to protect the colony.",
-  "minecolonies_irons:gunner.skills.desc": "Affects firearm reload speed, cadence, and accuracy.",
-  "minecolonies_irons:mage.skills.desc": "Affects mana pool, spell power, and casting speed.",
 
   "com.minecolonies.research.combat.gunner.name": "Firearms Training",
   "com.minecolonies.research.combat.gunner.subtitle": "Introduce gunpowder weaponry to the colony defense.",
