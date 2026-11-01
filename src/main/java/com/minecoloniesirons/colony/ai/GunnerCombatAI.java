@@ -238,8 +238,12 @@ public class GunnerCombatAI extends RangeCombatAI {
         }
 
         // Align facing directly at target eye position
-        this.user.getLookControl().setLookAt(target, 45.0F, 45.0F);
-        Vec3 diff = target.getEyePosition().subtract(this.user.getEyePosition());
+        this.user.getLookControl().setLookAt(target, 60.0F, 60.0F);
+        Vec3 shooterEye = this.user.getEyePosition();
+        Vec3 targetEye = target.getEyePosition();
+        Vec3 diff = targetEye.subtract(shooterEye);
+        Vec3 shootDirection = diff.normalize();
+
         double dx = diff.x;
         double dy = diff.y;
         double dz = diff.z;
@@ -275,14 +279,13 @@ public class GunnerCombatAI extends RangeCombatAI {
         // Swing arm to trigger player-like visual gunshot animation
         this.user.swing(InteractionHand.MAIN_HAND);
 
-        // Native Iron's Artifice gunshot: spawns Bullet projectile entity with sound, muzzle flash & recoil
-        Vec3 targetEye = target.getEyePosition();
-        FireOutcome outcome = GunplayManager.tryFire(this.user, targetEye);
+        // Native Iron's Artifice gunshot: passes normalized shootDirection towards target
+        FireOutcome outcome = GunplayManager.tryFire(this.user, shootDirection);
 
         if (!outcome.fired()) {
             if (outcome == FireOutcome.EMPTY_MAGAZINE && consumeBullet()) {
                 MagazineContents.set(weapon, new MagazineContents(1));
-                GunplayManager.tryFire(this.user, targetEye);
+                GunplayManager.tryFire(this.user, shootDirection);
             }
         }
 
