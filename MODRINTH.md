@@ -49,15 +49,18 @@ Both professions seamlessly integrate into the MineColonies University combat tr
 
 ---
 
-## 📦 Requirements
+## 📦 Requirements & Compatibility
 
-| Mod | Version | Required? |
+| Mod | Tested Version | Required? |
 | :--- | :--- | :--- |
 | **Minecraft** | `1.21.1` | **Required** |
-| **NeoForge** | `21.1.x`+ | **Required** |
-| **MineColonies** | `1.21.1` (with Structurize & BlockUI) | **Required** |
-| **Iron's Spells 'n Spellbooks** | `1.21.1` | **Required** (for Mage) |
-| **Iron's Arms 'n Artifice** | `1.21.1` | **Required** (for Gunner) |
+| **NeoForge** | `21.1.249` (or `21.1.84`+) | **Required** |
+| **[MineColonies](https://modrinth.com/mod/minecolonies)** | `1.1.1403-1.21.1` | **Required** |
+| **[Structurize](https://modrinth.com/mod/structurize)** | `1.0.832-1.21.1` | **Required** (MineColonies Core) |
+| **[BlockUI](https://modrinth.com/mod/blockui)** | `1.0.209-1.21.1` | **Required** (MineColonies Core) |
+| **[Iron's Spells 'n Spellbooks](https://modrinth.com/mod/irons-spells-n-spellbooks)** | `1.21.1-3.16.3` | **Required** (for Mage) |
+| **[Iron's Arms 'n Artifice](https://modrinth.com/mod/irons-arms-n-artifice)** | `1.21.1-1.1.0` | **Required** (for Gunner) |
+| **[Iron's Lib](https://modrinth.com/mod/irons-lib)** | `1.21.1-2.2.0` | **Required** (Iron's Core) |
 
 ---
 
@@ -83,3 +86,4 @@ Both professions seamlessly integrate into the MineColonies University combat tr
 * **อาชีพ Gunner (มือปืน):** ใช้อาวุธปืนคาบศิลา ปืนพก ปืนไรเฟิล และกระสุนจากม็อด Iron's Artifice ยิงกระสุนจริงตามทิศทางที่หัน พร้อมเอฟเฟกต์ควันปืนและประกายไฟปากกระบอก
 * **สายวิจัยในมหาวิทยาลัย (University):** ปลดล็อกอาชีพ Mage, Gunner และชุด Mage Robes ผ่านสายวิจัยการต่อสู้ (Combat Research)
 * **รองรับ MCA Reborn:** ใช้งานร่วมกับม็อดโมเดลคน 3D ได้อย่างสมบูรณ์แบบ
+
