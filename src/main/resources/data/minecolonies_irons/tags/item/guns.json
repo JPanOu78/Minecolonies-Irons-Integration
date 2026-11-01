@@ -1,0 +1,37 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "irons_artifice:guns",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:flintlock_pistol",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:blackpowder_revolver",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:six_shooter",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:musket",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:blunderbuss",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:arquebus",
+      "required": false
+    },
+    {
+      "id": "irons_artifice:clockwork_rifle",
+      "required": false
+    }
+  ]
+}

@@ -2,8 +2,11 @@ package com.minecoloniesirons.colony.equipment;
 
 import com.minecolonies.api.equipment.registry.EquipmentTypeEntry;
 import com.minecolonies.apiimp.CommonMinecoloniesAPIImpl;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -11,6 +14,18 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class ModIronsEquipmentTypes {
 
     public static final String MODID = "minecolonies_irons";
+
+    // Item Tags for Firearms
+    public static final TagKey<Item> TAG_IRONS_ARTIFICE_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_artifice", "guns"));
+    public static final TagKey<Item> TAG_COMMON_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "guns"));
+    public static final TagKey<Item> TAG_MINECOLONIES_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "guns"));
+
+    // Item Tags for Magic / Spell Focus
+    public static final TagKey<Item> TAG_IRONS_SPELL_BOOKS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "spell_books"));
+    public static final TagKey<Item> TAG_IRONS_STAVES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "staves"));
+    public static final TagKey<Item> TAG_CURIO_SPELLBOOK = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "spellbook"));
+    public static final TagKey<Item> TAG_COMMON_SPELL_FOCUS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "spell_focus"));
+    public static final TagKey<Item> TAG_MINECOLONIES_SPELL_FOCUS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "spell_focus"));
 
     public static final DeferredRegister<EquipmentTypeEntry> DEFERRED_REGISTER =
             DeferredRegister.create(CommonMinecoloniesAPIImpl.EQUIPMENT_TYPES, MODID);
@@ -37,6 +52,11 @@ public final class ModIronsEquipmentTypes {
 
     public static boolean isGunItem(ItemStack stack) {
         if (stack.isEmpty()) return false;
+        // Priority 1: Check standard & custom Item Tags
+        if (stack.is(TAG_IRONS_ARTIFICE_GUNS) || stack.is(TAG_COMMON_GUNS) || stack.is(TAG_MINECOLONIES_GUNS)) {
+            return true;
+        }
+        // Priority 2: Fallback check by item name / registry path
         String id = stack.getItem().toString().toLowerCase();
         return id.contains("pistol") || id.contains("revolver") || id.contains("musket")
                 || id.contains("blunderbuss") || id.contains("arquebus") || id.contains("rifle")
@@ -55,6 +75,13 @@ public final class ModIronsEquipmentTypes {
 
     public static boolean isSpellItem(ItemStack stack) {
         if (stack.isEmpty()) return false;
+        // Priority 1: Check standard & custom Item Tags
+        if (stack.is(TAG_IRONS_SPELL_BOOKS) || stack.is(TAG_IRONS_STAVES)
+                || stack.is(TAG_CURIO_SPELLBOOK) || stack.is(TAG_COMMON_SPELL_FOCUS)
+                || stack.is(TAG_MINECOLONIES_SPELL_FOCUS)) {
+            return true;
+        }
+        // Priority 2: Fallback check by item name / registry path
         String id = stack.getItem().toString().toLowerCase();
         return id.contains("staff") || id.contains("wand") || id.contains("cane")
                 || id.contains("spell") || id.contains("tome") || id.contains("grimoire")
