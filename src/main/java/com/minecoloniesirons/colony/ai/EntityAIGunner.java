@@ -99,8 +99,8 @@ public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBui
                         r -> r.getRequest().getEquipmentType().equals(tool));
 
         if (requests.isEmpty() && completedRequests.isEmpty()) {
-            // Request firearm restricted strictly to unlocked research tier (maxTier)
-            final Tool requestable = new Tool(tool, effectiveMin, maxTier);
+            // Request firearm restricted strictly to unlocked research tier (maxTier) with clear example item
+            final Tool requestable = new Tool(tool, effectiveMin, maxTier, ModIronsEquipmentTypes.getGunRequestStack());
             this.worker.getCitizenData().createRequest(requestable);
         }
 
@@ -111,6 +111,10 @@ public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBui
     @Override
     protected void atBuildingActions() {
         super.atBuildingActions();
+
+        if (this.combatAI != null) {
+            this.combatAI.equipFirearmGear();
+        }
 
         if (this.worker == null || this.building == null) return;
 
@@ -142,6 +146,17 @@ public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBui
             s += " bullet";
         }
         this.worker.setRenderMetadata(s);
+        if (this.combatAI != null) {
+            this.combatAI.equipFirearmGear();
+        }
+    }
+
+    @Override
+    public void cleanVisibleSlots() {
+        super.cleanVisibleSlots();
+        if (this.combatAI != null) {
+            this.combatAI.equipFirearmGear();
+        }
     }
 
     @Override

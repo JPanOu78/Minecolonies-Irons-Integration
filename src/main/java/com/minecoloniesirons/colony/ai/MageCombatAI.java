@@ -9,21 +9,25 @@ import com.minecolonies.core.entity.ai.workers.guard.RangeCombatAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import com.minecolonies.core.util.citizenutils.CitizenItemUtils;
 import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Mage Combat AI: Maintains tactical ranged distance (8-16 blocks),
  * equips and checks for Iron's Spells (Spellbooks, Staves, Mage Robes) across Tier 1 to 5,
- * verifies colony research unlock tiers, and applies Mana Focus damage multipliers and cast cooldown reductions.
+ * verifies colony research unlock tiers, renders flying projectiles and magic streams in the air,
+ * and applies Mana Focus damage multipliers and cast cooldown reductions.
  */
 public class MageCombatAI extends RangeCombatAI {
 
@@ -62,6 +66,10 @@ public class MageCombatAI extends RangeCombatAI {
                 || (!off.isEmpty() && ModIronsEquipmentTypes.isSpellItem(off));
     }
 
+    /**
+     * Ensures staff is held in main hand and spellbook in offhand at all times.
+     * If citizen only carries a spellbook, it is held in the main hand forward.
+     */
     public void equipMageGear() {
         if (this.user == null) return;
 
@@ -80,6 +88,9 @@ public class MageCombatAI extends RangeCombatAI {
         }
 
         var inv = this.user.getInventoryCitizen();
+        int staffSlot = -1;
+        int bookSlot = -1;
+
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack.isEmpty() || !ModIronsEquipmentTypes.isSpellItem(stack)) continue;
@@ -89,21 +100,33 @@ public class MageCombatAI extends RangeCombatAI {
 
             String itemName = stack.getItem().toString().toLowerCase();
 
-            // Equip staff or wand in main hand
-            if (!holdingStaff && (itemName.contains("staff") || itemName.contains("wand")
+            if (staffSlot == -1 && (itemName.contains("staff") || itemName.contains("wand")
                     || itemName.contains("cane") || itemName.contains("rapier") || itemName.contains("flamberge"))) {
-                CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, i);
-                holdingStaff = true;
-            }
-            // Equip spellbook in off hand
-            else if (!holdingBook && (itemName.contains("spell") || itemName.contains("book")
+                staffSlot = i;
+            } else if (bookSlot == -1 && (itemName.contains("spell") || itemName.contains("book")
                     || itemName.contains("tome") || itemName.contains("grimoire")
-                    || itemName.contains("codex") || itemName.contains("manual") || itemName.contains("bible"))) {
-                CitizenItemUtils.setHeldItem(this.user, InteractionHand.OFF_HAND, i);
-                holdingBook = true;
+                    || itemName.contains("codex") || itemName.contains("manual") || itemName.contains("bible")
+                    || itemName.contains("journal"))) {
+                bookSlot = i;
             }
+        }
 
-            if (holdingStaff && holdingBook) break;
+        // Case 1: Both staff and spellbook available -> Staff in Main Hand, Book in Off Hand
+        if (staffSlot != -1 && bookSlot != -1) {
+            CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, staffSlot);
+            this.user.setItemSlot(EquipmentSlot.MAINHAND, inv.getStackInSlot(staffSlot));
+            CitizenItemUtils.setHeldItem(this.user, InteractionHand.OFF_HAND, bookSlot);
+            this.user.setItemSlot(EquipmentSlot.OFFHAND, inv.getStackInSlot(bookSlot));
+        }
+        // Case 2: Only staff available -> Staff in Main Hand
+        else if (staffSlot != -1) {
+            CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, staffSlot);
+            this.user.setItemSlot(EquipmentSlot.MAINHAND, inv.getStackInSlot(staffSlot));
+        }
+        // Case 3: Only spellbook available -> Spellbook in Main Hand so it is visibly held forward
+        else if (bookSlot != -1) {
+            CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, bookSlot);
+            this.user.setItemSlot(EquipmentSlot.MAINHAND, inv.getStackInSlot(bookSlot));
         }
     }
 
@@ -189,7 +212,7 @@ public class MageCombatAI extends RangeCombatAI {
             Vec3 targetPos = target.getEyePosition();
             Vec3 direction = targetPos.subtract(citizenPos).normalize();
 
-            // Arcane particles during casting
+            // Arcane casting burst at hands
             serverLevel.sendParticles(
                     ParticleTypes.ENCHANT,
                     citizenPos.x + direction.x * 0.8D,
@@ -198,38 +221,63 @@ public class MageCombatAI extends RangeCombatAI {
                     15, 0.2D, 0.2D, 0.2D, 0.1D
             );
 
-            // Execute elemental or eldritch spellcast
+            // Execute elemental or eldritch spellcast with VISIBLE projectile trajectory
             if (mainName.contains("blood") || offName.contains("necronomicon") || offName.contains("vampiric")) {
-                // Blood / Eldritch Dark Magic
+                // Blood / Eldritch Dark Magic: Stream of dark void & soulflame particles towards target
                 serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.WITHER_SHOOT, SoundSource.NEUTRAL, 0.9F, 1.3F);
+                renderProjectileTrail(serverLevel, citizenPos, targetPos, ParticleTypes.SOUL_FIRE_FLAME, ParticleTypes.WITCH, 0.4D);
                 serverLevel.sendParticles(ParticleTypes.DAMAGE_INDICATOR, targetPos.x, targetPos.y + 0.5D, targetPos.z, 15, 0.3D, 0.4D, 0.3D, 0.1D);
                 float magicDamage = (10.0F + (weaponTier * 2.0F)) * damageMultiplier;
                 target.hurt(this.user.damageSources().wither(), magicDamage);
             } else if (mainName.contains("fire") || mainName.contains("pyro") || offName.contains("blaze")) {
-                // Fireball / Flame bolt spell
+                // Fireball / Flame bolt spell: Actual SmallFireball projectile flying + flame streak
                 serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                SmallFireball fireball = new SmallFireball(serverLevel, this.user, direction.scale(0.5D));
+                renderProjectileTrail(serverLevel, citizenPos, targetPos, ParticleTypes.FLAME, ParticleTypes.SMOKE, 0.4D);
+                SmallFireball fireball = new SmallFireball(serverLevel, this.user, direction.scale(0.6D));
                 fireball.setPos(citizenPos.x + direction.x, citizenPos.y, citizenPos.z + direction.z);
                 serverLevel.addFreshEntity(fireball);
+                float magicDamage = (9.0F + weaponTier) * damageMultiplier;
+                target.hurt(this.user.damageSources().inFire(), magicDamage);
             } else if (mainName.contains("ice") || mainName.contains("cryo") || offName.contains("frost")) {
-                // Frost / Ice shard spell
+                // Frost / Ice shard spell: Snowball projectile entity + snowflake stream
                 serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 1.0F, 1.4F);
-                serverLevel.sendParticles(ParticleTypes.SNOWFLAKE, targetPos.x, targetPos.y + 0.5D, targetPos.z, 20, 0.4D, 0.4D, 0.4D, 0.05D);
+                renderProjectileTrail(serverLevel, citizenPos, targetPos, ParticleTypes.SNOWFLAKE, ParticleTypes.INSTANT_EFFECT, 0.4D);
+                Snowball snowball = new Snowball(serverLevel, this.user);
+                snowball.setPos(citizenPos.x + direction.x * 0.8D, citizenPos.y, citizenPos.z + direction.z * 0.8D);
+                snowball.setDeltaMovement(direction.scale(1.8D));
+                serverLevel.addFreshEntity(snowball);
                 float magicDamage = (8.0F + weaponTier) * damageMultiplier;
                 target.hurt(this.user.damageSources().magic(), magicDamage);
                 target.setTicksFrozen(120);
             } else if (mainName.contains("lightning") || mainName.contains("electro")) {
-                // Lightning bolt spell
+                // Lightning bolt spell: Lightning spark stream + flash beam
                 serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.NEUTRAL, 0.8F, 1.6F);
-                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, targetPos.x, targetPos.y + 0.5D, targetPos.z, 25, 0.5D, 0.5D, 0.5D, 0.2D);
+                renderProjectileTrail(serverLevel, citizenPos, targetPos, ParticleTypes.ELECTRIC_SPARK, ParticleTypes.FLASH, 0.35D);
                 float magicDamage = (10.0F + weaponTier) * damageMultiplier;
                 target.hurt(this.user.damageSources().lightningBolt(), magicDamage);
             } else {
-                // Default Arcane Blast
+                // Default Arcane Blast: Dense stream of magical runes and enchantment particles
                 serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.NEUTRAL, 1.0F, 1.2F);
+                renderProjectileTrail(serverLevel, citizenPos, targetPos, ParticleTypes.ENCHANT, ParticleTypes.PORTAL, 0.4D);
                 serverLevel.sendParticles(ParticleTypes.WITCH, targetPos.x, targetPos.y + 0.5D, targetPos.z, 20, 0.3D, 0.5D, 0.3D, 0.1D);
                 float magicDamage = (6.0F + (weaponTier * 1.5F) + (hasSpellbook ? 2.0F : 0.0F)) * damageMultiplier;
                 target.hurt(this.user.damageSources().magic(), magicDamage);
+            }
+        }
+    }
+
+    /**
+     * Renders a continuous visual projectile stream in the air from start to target.
+     */
+    public static void renderProjectileTrail(ServerLevel level, Vec3 start, Vec3 end, ParticleOptions primary, ParticleOptions secondary, double stepSize) {
+        double dist = start.distanceTo(end);
+        int steps = Math.max(2, (int) (dist / stepSize));
+        for (int i = 1; i <= steps; i++) {
+            double progress = (double) i / steps;
+            Vec3 pos = start.lerp(end, progress);
+            level.sendParticles(primary, pos.x, pos.y, pos.z, 2, 0.05, 0.05, 0.05, 0.01);
+            if (secondary != null && i % 2 == 0) {
+                level.sendParticles(secondary, pos.x, pos.y, pos.z, 1, 0.02, 0.02, 0.02, 0.0);
             }
         }
     }

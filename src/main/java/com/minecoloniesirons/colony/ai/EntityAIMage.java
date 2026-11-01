@@ -98,8 +98,8 @@ public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildin
                         r -> r.getRequest().getEquipmentType().equals(tool));
 
         if (requests.isEmpty() && completedRequests.isEmpty()) {
-            // Request spell focus restricted strictly to unlocked research tier (maxTier)
-            final Tool requestable = new Tool(tool, effectiveMin, maxTier);
+            // Request spell focus restricted strictly to unlocked research tier (maxTier) with clear example item
+            final Tool requestable = new Tool(tool, effectiveMin, maxTier, ModIronsEquipmentTypes.getSpellFocusRequestStack());
             this.worker.getCitizenData().createRequest(requestable);
         }
 
@@ -111,6 +111,25 @@ public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildin
     protected void updateRenderMetaData() {
         String s = this.getState() == AIWorkerState.IDLE ? "" : "working";
         this.worker.setRenderMetadata(s);
+        if (this.combatAI != null) {
+            this.combatAI.equipMageGear();
+        }
+    }
+
+    @Override
+    protected void atBuildingActions() {
+        super.atBuildingActions();
+        if (this.combatAI != null) {
+            this.combatAI.equipMageGear();
+        }
+    }
+
+    @Override
+    public void cleanVisibleSlots() {
+        super.cleanVisibleSlots();
+        if (this.combatAI != null) {
+            this.combatAI.equipMageGear();
+        }
     }
 
     @Override

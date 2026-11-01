@@ -14,7 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -125,6 +127,7 @@ public class GunnerCombatAI extends RangeCombatAI {
 
         if (bestSlot != -1) {
             CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, bestSlot);
+            this.user.setItemSlot(EquipmentSlot.MAINHAND, inv.getStackInSlot(bestSlot));
         }
     }
 
@@ -245,32 +248,34 @@ public class GunnerCombatAI extends RangeCombatAI {
             serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.6F, 1.8F);
 
             // Muzzle smoke and flash
+            Vec3 muzzlePos = citizenEye.add(direction.scale(0.85D));
             serverLevel.sendParticles(
                     ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                    citizenEye.x + direction.x * 0.9D,
-                    citizenEye.y + direction.y * 0.9D,
-                    citizenEye.z + direction.z * 0.9D,
+                    muzzlePos.x, muzzlePos.y, muzzlePos.z,
                     6, 0.05D, 0.05D, 0.05D, 0.02D
             );
             serverLevel.sendParticles(
                     ParticleTypes.FLAME,
-                    citizenEye.x + direction.x * 0.9D,
-                    citizenEye.y + direction.y * 0.9D,
-                    citizenEye.z + direction.z * 0.9D,
+                    muzzlePos.x, muzzlePos.y, muzzlePos.z,
                     3, 0.02D, 0.02D, 0.02D, 0.01D
             );
+
+            // Render visible bullet flight trajectory from muzzle to target
+            renderBulletFlight(serverLevel, muzzlePos, targetEye, isBlunderbuss, isSniper);
 
             // Calculate base damage depending on weapon tier
             float baseDamage = 8.0F;
             if (isBlunderbuss) {
                 baseDamage = 11.0F;
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 15, 0.6D, 0.6D, 0.6D, 0.1D);
+                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 15, 0.5D, 0.5D, 0.5D, 0.15D);
             } else if (isSniper) {
                 baseDamage = 15.0F;
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 8, 0.2D, 0.2D, 0.2D, 0.2D);
+                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 10, 0.2D, 0.2D, 0.2D, 0.2D);
+                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, targetEye.x, targetEye.y, targetEye.z, 8, 0.2D, 0.2D, 0.2D, 0.1D);
             } else {
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 6, 0.3D, 0.3D, 0.3D, 0.1D);
+                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 8, 0.25D, 0.25D, 0.25D, 0.1D);
             }
+            serverLevel.sendParticles(ParticleTypes.POOF, targetEye.x, targetEye.y, targetEye.z, 3, 0.1D, 0.1D, 0.1D, 0.02D);
 
             // Apply Target Practice research damage multiplier
             float totalDamage = baseDamage * getDamageMultiplier();
@@ -294,6 +299,56 @@ public class GunnerCombatAI extends RangeCombatAI {
             this.shotsFiredInVolley = 0;
             if (this.user.level() instanceof ServerLevel sl) {
                 sl.playSound(null, this.user.blockPosition(), SoundEvents.IRON_GOLEM_REPAIR, SoundSource.NEUTRAL, 0.5F, 1.4F);
+            }
+        }
+    }
+
+    /**
+     * Renders a visible, supersonic bullet flight trajectory from gun muzzle to target.
+     * Supports scattershot pellet cone for Blunderbuss, piercing sparks for rifles, and smoke tracers.
+     */
+    public static void renderBulletFlight(ServerLevel level, Vec3 start, Vec3 end, boolean isBlunderbuss, boolean isSniper) {
+        if (isBlunderbuss) {
+            // Shotgun scattershot: 5 distinct pellet trajectories spreading outward
+            RandomSource rnd = level.getRandom();
+            for (int p = 0; p < 5; p++) {
+                double spreadX = (rnd.nextDouble() - 0.5D) * 1.5D;
+                double spreadY = (rnd.nextDouble() - 0.5D) * 1.5D;
+                double spreadZ = (rnd.nextDouble() - 0.5D) * 1.5D;
+                Vec3 spreadEnd = end.add(spreadX, spreadY, spreadZ);
+
+                double dist = start.distanceTo(spreadEnd);
+                int steps = Math.max(3, (int) (dist / 0.5D));
+                for (int i = 1; i <= steps; i++) {
+                    double progress = (double) i / steps;
+                    Vec3 pos = start.lerp(spreadEnd, progress);
+                    level.sendParticles(ParticleTypes.CRIT, pos.x, pos.y, pos.z, 1, 0.02D, 0.02D, 0.02D, 0.0D);
+                    if (i % 3 == 0) {
+                        level.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0.01D, 0.01D, 0.01D, 0.0D);
+                    }
+                }
+            }
+            return;
+        }
+
+        // Standard or Sniper supersonic tracer line
+        double dist = start.distanceTo(end);
+        int steps = Math.max(4, (int) (dist / 0.35D));
+        for (int i = 1; i <= steps; i++) {
+            double progress = (double) i / steps;
+            Vec3 pos = start.lerp(end, progress);
+
+            // Dense supersonic crit spark trail
+            level.sendParticles(ParticleTypes.CRIT, pos.x, pos.y, pos.z, 2, 0.02D, 0.02D, 0.02D, 0.01D);
+
+            // Whisp of gunsmoke along the path
+            if (i % 2 == 0) {
+                level.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0.01D, 0.01D, 0.01D, 0.0D);
+            }
+
+            // Sniper rifle electric tracer streak
+            if (isSniper && i % 3 == 0) {
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, pos.x, pos.y, pos.z, 1, 0.02D, 0.02D, 0.02D, 0.0D);
             }
         }
     }

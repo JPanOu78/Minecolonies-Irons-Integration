@@ -126,6 +126,32 @@ public final class ModIronsEquipmentTypes {
     }
 
     /**
+     * Returns the preferred item stack to request for a firearm.
+     * Requests Iron's Artifice flintlock pistol as the standard baseline weapon.
+     */
+    public static ItemStack getGunRequestStack() {
+        ResourceLocation gunId = ResourceLocation.fromNamespaceAndPath("irons_artifice", "flintlock_pistol");
+        Item gunItem = BuiltInRegistries.ITEM.get(gunId);
+        if (gunItem != null && gunItem != Items.AIR) {
+            return new ItemStack(gunItem);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * Returns the preferred item stack to request for a spell focus.
+     * Requests Iron's Spells flimsy journal as the standard baseline spellbook.
+     */
+    public static ItemStack getSpellFocusRequestStack() {
+        ResourceLocation bookId = ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "flimsy_journal");
+        Item bookItem = BuiltInRegistries.ITEM.get(bookId);
+        if (bookItem != null && bookItem != Items.AIR) {
+            return new ItemStack(bookItem);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
      * Checks if the stack is a valid spellbook, staff, wand, or spellcasting weapon from Iron's Spells 'n Spellbooks.
      * Strictly rejects workstations, anvils, tables, cauldrons, materials, scrolls, and armor.
      */
