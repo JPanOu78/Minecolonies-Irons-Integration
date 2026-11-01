@@ -56,20 +56,20 @@
   "com.minecolonies.research.effects.mage.description": "ปลดล็อคอาชีพ จอมเวท (Mage) ในป้อมยาม และอนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 1 (Flimsy Journal, Graybeard Staff)",
 
   "com.minecolonies.research.combat.mage_armory_2.name": "การพัฒนายุทธภัณฑ์เวท",
-  "com.minecolonies.research.combat.mage_armory_2.subtitle": "จัดหาคัมภีร์ที่แข็งแกร่งขึ้นและอุปกรณ์ร่ายเวทที่มีสมดุลพลัง",
-  "com.minecolonies.research.effects.mage_armory_2.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 2: Apprentice's Spell Book, Ironbound Tome, Artificer's Cane, และ Amethyst Rapier",
+  "com.minecolonies.research.combat.mage_armory_2.subtitle": "จัดหาคัมภีร์ที่แข็งแกร่งขึ้น อุปกรณ์ร่ายเวท และปลดล็อคชุดคลุมเวทมนตร์",
+  "com.minecolonies.research.effects.mage_armory_2.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 2 และปลดล็อคชุดคลุมเวทมนตร์ (Wandering Magician, Wizard Robes) พร้อมรับบัฟความสามารถพิเศษตามสายเวท",
 
   "com.minecolonies.research.combat.mage_armory_3.name": "ศาสตร์เวทชำนาญธาตุ",
   "com.minecolonies.research.combat.mage_armory_3.subtitle": "ควบคุมพลังธาตุปฐมกาลแห่งไฟ น้ำแข็ง และสายฟ้า",
-  "com.minecolonies.research.effects.mage_armory_3.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 3: Enchanted Spell Book, Blaze Manual, Frostbranded Book, Ice Staff, Rod o' Lightning, และ Pyrium Staff",
+  "com.minecolonies.research.effects.mage_armory_3.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 3 และปลดล็อคชุดคลุมเวทมนตร์ธาตุ (Pyromancer, Cryomancer, Electromancer, Priest Robes)",
 
   "com.minecolonies.research.combat.mage_armory_4.name": "ศาสตร์มหาจอมเวท",
   "com.minecolonies.research.combat.mage_armory_4.subtitle": "ปลดล็อคม้วนคัมภีร์โบราณ กริมัวร์อัญเชิญ และเวทมนตร์มิติ",
-  "com.minecolonies.research.effects.mage_armory_4.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 4: Grimoire of Evokation, Villager Bible, Dragonskin Book, Vampiric Book, Hither-Thither Wand, และ Spellbreaker",
+  "com.minecolonies.research.effects.mage_armory_4.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 4 และปลดล็อคชุดคลุมขั้นสูง (Cultist, Plagued, Shadowwalker, Archevoker Robes)",
 
   "com.minecolonies.research.combat.mage_armory_5.name": "โบราณวัตถุจุติบรรพกาล",
   "com.minecolonies.research.combat.mage_armory_5.subtitle": "ครอบครองโบราณวัตถุเนเธอไรต์ต้องห้ามและพลังมนตราโบราณที่สาบสูญ",
-  "com.minecolonies.research.effects.mage_armory_5.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 5: Ancient Codex, Necronomicon, The Blood Staff, และ Decrepit Flamberge",
+  "com.minecolonies.research.effects.mage_armory_5.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 5 และปลดล็อคชุดคลุมมหาจอมเวทเนเธอไรต์ (Netherite Mage Robes)",
 
   "com.minecolonies.research.combat.mage_focus_1.name": "การเพ่งสมาธิเวทมนตร์ I",
   "com.minecolonies.research.combat.mage_focus_1.subtitle": "ศาสตร์การทำสมาธิรวบรวมพลังเวทภายในกาย",

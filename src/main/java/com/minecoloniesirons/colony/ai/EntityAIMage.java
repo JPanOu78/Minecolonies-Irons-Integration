@@ -21,6 +21,8 @@ import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
 import com.minecoloniesirons.colony.jobs.JobMage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildingGuards> {
 
@@ -119,8 +121,36 @@ public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildin
     @Override
     protected void atBuildingActions() {
         super.atBuildingActions();
+
+        if (this.worker != null && this.building != null && getMaxAllowedTier() >= 2) {
+            // Retrieve robes for empty or upgradeable armor slots from tower chest
+            for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.CHEST, EquipmentSlot.HEAD, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
+                ItemStack current = this.worker.getItemBySlot(slot);
+                int currentTier = ModIronsEquipmentTypes.isRobeItemForSlot(current, slot) ? ModIronsEquipmentTypes.getRobeTier(current) : 0;
+                int maxTier = getMaxAllowedTier();
+                if (currentTier < maxTier) {
+                    InventoryUtils.transferXOfFirstSlotInProviderWithIntoNextFreeSlotInItemHandler(
+                            this.building,
+                            stack -> ModIronsEquipmentTypes.isRobeItemForSlot(stack, slot)
+                                    && ModIronsEquipmentTypes.getRobeTier(stack) <= maxTier
+                                    && ModIronsEquipmentTypes.getRobeTier(stack) > currentTier,
+                            1,
+                            this.worker.getInventoryCitizen()
+                    );
+                }
+            }
+        }
+
         if (this.combatAI != null) {
             this.combatAI.equipMageGear();
+        }
+    }
+
+    @Override
+    public void equipInventoryArmor() {
+        super.equipInventoryArmor();
+        if (this.combatAI != null) {
+            this.combatAI.equipMageRobes();
         }
     }
 

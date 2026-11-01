@@ -7,6 +7,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -207,6 +209,67 @@ public final class ModIronsEquipmentTypes {
                 || id.contains("rapier")) return 2;
         // Tier 1: Flimsy Journal, Rotten Spell Book, Graybeard Staff
         return 1;
+    }
+
+    /**
+     * Checks if the stack is a valid magic robe or mage armor from Iron's Spells 'n Spellbooks.
+     */
+    public static boolean isRobeItem(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (!key.getNamespace().equals("irons_spellbooks")) return false;
+        String path = key.getPath();
+        return path.endsWith("_helmet") || path.endsWith("_chestplate")
+                || path.endsWith("_leggings") || path.endsWith("_boots")
+                || path.endsWith("_hat") || path.endsWith("_crown");
+    }
+
+    /**
+     * Checks if the stack is a valid robe/armor piece for the specified EquipmentSlot.
+     */
+    public static boolean isRobeItemForSlot(ItemStack stack, EquipmentSlot slot) {
+        if (!isRobeItem(stack)) return false;
+        String path = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        return switch (slot) {
+            case HEAD -> path.endsWith("_helmet") || path.endsWith("_hat") || path.endsWith("_crown");
+            case CHEST -> path.endsWith("_chestplate");
+            case LEGS -> path.endsWith("_leggings");
+            case FEET -> path.endsWith("_boots");
+            default -> false;
+        };
+    }
+
+    /**
+     * Returns the armor tier of the robe (Tier 2 to 5).
+     * Level 2 research unlocks Tier 2 robes.
+     */
+    public static int getRobeTier(ItemStack stack) {
+        if (!isRobeItem(stack)) return 0;
+        String path = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        if (path.contains("netherite")) return 5;
+        if (path.contains("cultist") || path.contains("plagued") || path.contains("shadowwalker")
+                || path.contains("archevoker") || path.contains("infernal") || path.contains("paladin")) return 4;
+        if (path.contains("pyromancer") || path.contains("cryomancer") || path.contains("electromancer")
+                || path.contains("priest")) return 3;
+        // Tier 2: wandering_magician, wizard, pumpkin, tarnished, speed_boots
+        return 2;
+    }
+
+    /**
+     * Returns the magic school associated with the robe.
+     */
+    public static MageRobeSchool getRobeSchool(ItemStack stack) {
+        if (!isRobeItem(stack)) return MageRobeSchool.NONE;
+        String path = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        if (path.contains("netherite")) return MageRobeSchool.NETHERITE;
+        if (path.contains("pyromancer") || path.contains("infernal")) return MageRobeSchool.FIRE;
+        if (path.contains("cryomancer")) return MageRobeSchool.ICE;
+        if (path.contains("electromancer")) return MageRobeSchool.LIGHTNING;
+        if (path.contains("priest") || path.contains("paladin")) return MageRobeSchool.HOLY;
+        if (path.contains("cultist")) return MageRobeSchool.BLOOD;
+        if (path.contains("archevoker") || path.contains("plagued")) return MageRobeSchool.EVOCATION;
+        if (path.contains("shadowwalker")) return MageRobeSchool.ENDER;
+        return MageRobeSchool.ARCANE;
     }
 
     private ModIronsEquipmentTypes() {}

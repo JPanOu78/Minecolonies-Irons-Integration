@@ -54,20 +54,20 @@
   "com.minecolonies.research.effects.mage.description": "Unlocks Mage Guard in Guard Towers and permits Tier 1 spell tools (Flimsy Journal, Graybeard Staff).",
 
   "com.minecolonies.research.combat.mage_armory_2.name": "Arcane Repository",
-  "com.minecolonies.research.combat.mage_armory_2.subtitle": "Supply sturdier tomes and finely balanced casting implements.",
-  "com.minecolonies.research.effects.mage_armory_2.description": "Permits Tier 2 spell tools: Apprentice's Spell Book, Ironbound Tome, Artificer's Cane, and Amethyst Rapier.",
+  "com.minecolonies.research.combat.mage_armory_2.subtitle": "Supply sturdier tomes, casting implements, and unlock magic robes.",
+  "com.minecolonies.research.effects.mage_armory_2.description": "Permits Tier 2 spell tools and unlocks Magic Robes (Wandering Magician, Wizard sets) granting school-specific ability buffs.",
 
   "com.minecolonies.research.combat.mage_armory_3.name": "Elemental Focus",
   "com.minecolonies.research.combat.mage_armory_3.subtitle": "Channel the primal energies of fire, ice, and lightning.",
-  "com.minecolonies.research.effects.mage_armory_3.description": "Permits Tier 3 spell tools: Enchanted Spell Book, Blaze Manual, Frostbranded Book, Ice Staff, Rod o' Lightning, and Pyrium Staff.",
+  "com.minecolonies.research.effects.mage_armory_3.description": "Permits Tier 3 spell tools and Elemental Robes (Pyromancer, Cryomancer, Electromancer, Priest sets).",
 
   "com.minecolonies.research.combat.mage_armory_4.name": "High Sorcery",
   "com.minecolonies.research.combat.mage_armory_4.subtitle": "Unlock ancient scrolls, evocation grimoires, and spatial mastery.",
-  "com.minecolonies.research.effects.mage_armory_4.description": "Permits Tier 4 spell tools: Grimoire of Evokation, Villager Bible, Dragonskin Book, Vampiric Book, Hither Wand, and Spellbreaker.",
+  "com.minecolonies.research.effects.mage_armory_4.description": "Permits Tier 4 spell tools and High Sorcery Robes (Cultist, Plagued, Shadowwalker, Archevoker sets).",
 
   "com.minecolonies.research.combat.mage_armory_5.name": "Eldritch Artifacts",
   "com.minecolonies.research.combat.mage_armory_5.subtitle": "Harness forbidden netherite relics and forgotten eldritch power.",
-  "com.minecolonies.research.effects.mage_armory_5.description": "Permits Tier 5 spell tools: Ancient Codex, Necronomicon, The Blood Staff, and Decrepit Flamberge.",
+  "com.minecolonies.research.effects.mage_armory_5.description": "Permits Tier 5 spell tools and Netherite Mage Robes.",
 
   "com.minecolonies.research.combat.mage_focus_1.name": "Mana Focus I",
   "com.minecolonies.research.combat.mage_focus_1.subtitle": "Meditation techniques to concentrate internal magical reserves.",
