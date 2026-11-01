@@ -1,15 +1,75 @@
 {
+  "com.minecolonies_irons.job.gunner": "Gunner",
+  "com.minecolonies_irons.job.mage": "Mage",
   "com.minecolonies.job.gunner": "Gunner",
+  "com.minecolonies.job.mage": "Mage",
+  "com.minecolonies_irons.coremod.gui.workerhuts.gunner": "Gunner",
+  "com.minecolonies_irons.coremod.gui.workerhuts.mage": "Mage",
   "com.minecolonies.coremod.gui.workerhuts.gunner": "Gunner",
+  "com.minecolonies.coremod.gui.workerhuts.mage": "Mage",
+  "com.minecolonies_irons.equipment.gun": "Firearm",
+  "com.minecolonies_irons.equipment.spell_focus": "Spell Focus / Staff",
+
   "minecolonies:gunner.job.desc": "Equipped with firearms from Iron's Artifice. Delivers devastating ranged volleys and kites enemies.",
+  "minecolonies:mage.job.desc": "Harnesses arcane arts from Iron's Spells. Casts offensive and supportive spells to protect the colony.",
+
   "com.minecolonies.research.combat.gunner.name": "Firearms Training",
   "com.minecolonies.research.combat.gunner.subtitle": "Introduce gunpowder weaponry to the colony defense.",
-  "com.minecolonies.research.effects.gunner.description": "Unlocks Gunner as a new Guard Type (Firearms) in Guard Towers.",
+  "com.minecolonies.research.effects.gunner.description": "Unlocks Gunner Guard in Guard Towers and permits Tier 1 firearms (Flintlock Pistol, Blackpowder Revolver, Six Shooter).",
 
-  "com.minecolonies.job.mage": "Mage",
-  "com.minecolonies.coremod.gui.workerhuts.mage": "Mage",
-  "minecolonies:mage.job.desc": "Harnesses arcane arts from Iron's Spells. Casts offensive and supportive spells to protect the colony.",
-  "com.minecolonies.research.combat.mage.name": "Arcane Mastery",
+  "com.minecolonies.research.combat.gunner_armory_2.name": "Arsenal Expansion",
+  "com.minecolonies.research.combat.gunner_armory_2.subtitle": "Equip colony gunners with military longarms.",
+  "com.minecolonies.research.effects.gunner_armory_2.description": "Permits Tier 2 firearms: Muskets and Blunderbusses.",
+
+  "com.minecolonies.research.combat.gunner_armory_3.name": "Heavy Firepower",
+  "com.minecolonies.research.combat.gunner_armory_3.subtitle": "Harness high-precision mechanisms and devastating munitions.",
+  "com.minecolonies.research.effects.gunner_armory_3.description": "Permits Tier 3 firearms: Arquebuses and Clockwork Rifles.",
+
+  "com.minecolonies.research.combat.gunner_practice_1.name": "Target Practice I",
+  "com.minecolonies.research.combat.gunner_practice_1.subtitle": "Train marksmen in steady aiming and volley discipline.",
+  "com.minecolonies.research.effects.gunner_damage_1.description": "Increases Gunner firearm damage by +10%.",
+
+  "com.minecolonies.research.combat.gunner_practice_2.name": "Target Practice II",
+  "com.minecolonies.research.combat.gunner_practice_2.subtitle": "Advanced drills in recoil control and rapid target acquisition.",
+  "com.minecolonies.research.effects.gunner_damage_2.description": "Increases Gunner firearm damage by an additional +10% (+20% total).",
+
+  "com.minecolonies.research.combat.gunner_practice_3.name": "Target Practice III",
+  "com.minecolonies.research.combat.gunner_practice_3.subtitle": "Master marksmen capable of lethal precision under fire.",
+  "com.minecolonies.research.effects.gunner_damage_3.description": "Increases Gunner firearm damage by an additional +10% (+30% total).",
+
+  "com.minecolonies.research.combat.mage.name": "Arcane Initiation",
   "com.minecolonies.research.combat.mage.subtitle": "Train colony guards in the arts of spellcasting.",
-  "com.minecolonies.research.effects.mage.description": "Unlocks Mage as a new Guard Type (Spellbooks) in Guard Towers."
+  "com.minecolonies.research.effects.mage.description": "Unlocks Mage Guard in Guard Towers and permits Tier 1 spell tools (Flimsy Journal, Graybeard Staff).",
+
+  "com.minecolonies.research.combat.mage_armory_2.name": "Arcane Repository",
+  "com.minecolonies.research.combat.mage_armory_2.subtitle": "Supply sturdier tomes and finely balanced casting implements.",
+  "com.minecolonies.research.effects.mage_armory_2.description": "Permits Tier 2 spell tools: Apprentice's Spell Book, Ironbound Tome, Artificer's Cane, and Amethyst Rapier.",
+
+  "com.minecolonies.research.combat.mage_armory_3.name": "Elemental Focus",
+  "com.minecolonies.research.combat.mage_armory_3.subtitle": "Channel the primal energies of fire, ice, and lightning.",
+  "com.minecolonies.research.effects.mage_armory_3.description": "Permits Tier 3 spell tools: Enchanted Spell Book, Blaze Manual, Frostbranded Book, Ice Staff, Rod o' Lightning, and Pyrium Staff.",
+
+  "com.minecolonies.research.combat.mage_armory_4.name": "High Sorcery",
+  "com.minecolonies.research.combat.mage_armory_4.subtitle": "Unlock ancient scrolls, evocation grimoires, and spatial mastery.",
+  "com.minecolonies.research.effects.mage_armory_4.description": "Permits Tier 4 spell tools: Grimoire of Evokation, Villager Bible, Dragonskin Book, Vampiric Book, Hither Wand, and Spellbreaker.",
+
+  "com.minecolonies.research.combat.mage_armory_5.name": "Eldritch Artifacts",
+  "com.minecolonies.research.combat.mage_armory_5.subtitle": "Harness forbidden netherite relics and forgotten eldritch power.",
+  "com.minecolonies.research.effects.mage_armory_5.description": "Permits Tier 5 spell tools: Ancient Codex, Necronomicon, The Blood Staff, and Decrepit Flamberge.",
+
+  "com.minecolonies.research.combat.mage_focus_1.name": "Mana Focus I",
+  "com.minecolonies.research.combat.mage_focus_1.subtitle": "Meditation techniques to concentrate internal magical reserves.",
+  "com.minecolonies.research.effects.mage_damage_1.description": "Increases Mage spell damage by +10%.",
+
+  "com.minecolonies.research.combat.mage_focus_2.name": "Mana Focus II",
+  "com.minecolonies.research.combat.mage_focus_2.subtitle": "Harmonize mana channels for deeper arcane resonance.",
+  "com.minecolonies.research.effects.mage_damage_2.description": "Increases Mage spell damage by an additional +10% (+20% total).",
+
+  "com.minecolonies.research.combat.mage_focus_3.name": "Mana Focus III",
+  "com.minecolonies.research.combat.mage_focus_3.subtitle": "Pure mana convergence that surges through every incantation.",
+  "com.minecolonies.research.effects.mage_damage_3.description": "Increases Mage spell damage by an additional +10% (+30% total).",
+
+  "com.minecolonies.research.combat.mage_focus_4.name": "Archmage Transcendence",
+  "com.minecolonies.research.combat.mage_focus_4.subtitle": "Transcend mortal limits of spellcasting with near-instant incantations.",
+  "com.minecolonies.research.effects.mage_damage_4.description": "Increases Mage spell damage by +10% (+40% total) and reduces spell cast delay by -15%."
 }

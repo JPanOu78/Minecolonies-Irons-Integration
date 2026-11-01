@@ -1,5 +1,6 @@
 package com.minecoloniesirons;
 
+import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
 import com.minecoloniesirons.colony.guardtype.ModIronsGuardTypes;
 import com.minecoloniesirons.colony.jobs.ModIronsJobs;
 import com.minecoloniesirons.colony.module.IronsTowerModules;
@@ -18,7 +19,8 @@ public class MinecoloniesIronsIntegration {
     public MinecoloniesIronsIntegration(IEventBus modEventBus) {
         LOGGER.info("Initializing Minecolonies Iron's Integration mod...");
 
-        // Register custom Minecolonies jobs and guard types
+        // Register custom Minecolonies equipment types, jobs, and guard types
+        ModIronsEquipmentTypes.DEFERRED_REGISTER.register(modEventBus);
         ModIronsJobs.DEFERRED_REGISTER.register(modEventBus);
         ModIronsGuardTypes.DEFERRED_REGISTER.register(modEventBus);
 

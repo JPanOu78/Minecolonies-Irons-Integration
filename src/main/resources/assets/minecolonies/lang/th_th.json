@@ -1,15 +1,75 @@
 {
+  "com.minecolonies_irons.job.gunner": "พลปืน (Gunner)",
+  "com.minecolonies_irons.job.mage": "จอมเวท (Mage)",
   "com.minecolonies.job.gunner": "พลปืน (Gunner)",
-  "com.minecolonies.coremod.gui.workerhuts.gunner": "พลปืน",
-  "minecolonies:gunner.job.desc": "สวมใส่อาวุธปืนจาก Iron's Artifice ยิงกระสุนชุดรุนแรงระยะไกลและถอยรักษาระยะ",
-  "com.minecolonies.research.combat.gunner.name": "การฝึกใช้อาวุธปืน",
-  "com.minecolonies.research.combat.gunner.subtitle": "นำอาวุธดินปืนเข้ามาใช้ในการป้องกันอาณานิคม",
-  "com.minecolonies.research.effects.gunner.description": "ปลดล็อคอาชีพ พลปืน (Gunner) ในป้อมยาม (Guard Tower)",
-
   "com.minecolonies.job.mage": "จอมเวท (Mage)",
+  "com.minecolonies_irons.coremod.gui.workerhuts.gunner": "พลปืน",
+  "com.minecolonies_irons.coremod.gui.workerhuts.mage": "จอมเวท",
+  "com.minecolonies.coremod.gui.workerhuts.gunner": "พลปืน",
   "com.minecolonies.coremod.gui.workerhuts.mage": "จอมเวท",
+  "com.minecolonies_irons.equipment.gun": "อาวุธปืน",
+  "com.minecolonies_irons.equipment.spell_focus": "คทาเวท / คัมภีร์เวท",
+
+  "minecolonies:gunner.job.desc": "สวมใส่อาวุธปืนจาก Iron's Artifice ยิงกระสุนชุดรุนแรงระยะไกลและถอยรักษาระยะ",
   "minecolonies:mage.job.desc": "ควบคุมพลังเวทมนตร์จาก Iron's Spells ร่ายคาถาโจมตีและสนับสนุนเพื่อปกป้องเมือง",
-  "com.minecolonies.research.combat.mage.name": "ความเชี่ยวชาญเวทมนตร์",
+
+  "com.minecolonies.research.combat.gunner.name": "การฝึกซ้อมยิงปืนขั้นต้น",
+  "com.minecolonies.research.combat.gunner.subtitle": "นำอาวุธดินปืนเข้ามาใช้ในการป้องกันอาณานิคม",
+  "com.minecolonies.research.effects.gunner.description": "ปลดล็อคอาชีพ พลปืน (Gunner) ในป้อมยาม และอนุญาตให้อนุญาตใช้อาวุธปืน Tier 1 (Flintlock Pistol, Blackpowder Revolver, Six Shooter)",
+
+  "com.minecolonies.research.combat.gunner_armory_2.name": "การพัฒนาคลังแสง",
+  "com.minecolonies.research.combat.gunner_armory_2.subtitle": "จัดหาอาวุธปืนยาวมาตรฐานการทหารให้พลปืน",
+  "com.minecolonies.research.effects.gunner_armory_2.description": "อนุญาตให้อนุญาตใช้อาวุธปืน Tier 2: Musket และ Blunderbuss",
+
+  "com.minecolonies.research.combat.gunner_armory_3.name": "การเสริมแสนยานุภาพ",
+  "com.minecolonies.research.combat.gunner_armory_3.subtitle": "ประยุกต์ใช้กลไกความแม่นยำสูงและกระสุนพลังทำลายล้างหนัก",
+  "com.minecolonies.research.effects.gunner_armory_3.description": "อนุญาตให้อนุญาตใช้อาวุธปืน Tier 3: Arquebus และ Clockwork Rifle",
+
+  "com.minecolonies.research.combat.gunner_practice_1.name": "การฝึกซ้อมความแม่นยำ I",
+  "com.minecolonies.research.combat.gunner_practice_1.subtitle": "ฝึกฝนการเล็งที่มั่นคงและระเบียบการยิงชุด",
+  "com.minecolonies.research.effects.gunner_damage_1.description": "เพิ่มพลังโจมตีของพลปืนขึ้น +10%",
+
+  "com.minecolonies.research.combat.gunner_practice_2.name": "การฝึกซ้อมความแม่นยำ II",
+  "com.minecolonies.research.combat.gunner_practice_2.subtitle": "การควบคุมแรงดีดขั้นสูงและการจับเป้าหมายอย่างรวดเร็ว",
+  "com.minecolonies.research.effects.gunner_damage_2.description": "เพิ่มพลังโจมตีของพลปืนขึ้นอีก +10% (รวม +20%)",
+
+  "com.minecolonies.research.combat.gunner_practice_3.name": "การฝึกซ้อมความแม่นยำ III",
+  "com.minecolonies.research.combat.gunner_practice_3.subtitle": "พลแม่นปืนระดับยอดฝีมือ สังหารเป้าหมายเด็ดขาดภายใต้สมรภูมิ",
+  "com.minecolonies.research.effects.gunner_damage_3.description": "เพิ่มพลังโจมตีของพลปืนขึ้นอีก +10% (รวม +30%)",
+
+  "com.minecolonies.research.combat.mage.name": "การฝึกศาสตร์เวทมนตร์ขั้นต้น",
   "com.minecolonies.research.combat.mage.subtitle": "ฝึกฝนทหารยามในศาสตร์แห่งการร่ายคาถา",
-  "com.minecolonies.research.effects.mage.description": "ปลดล็อคอาชีพ จอมเวท (Mage) ในป้อมยาม (Guard Tower)"
+  "com.minecolonies.research.effects.mage.description": "ปลดล็อคอาชีพ จอมเวท (Mage) ในป้อมยาม และอนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 1 (Flimsy Journal, Graybeard Staff)",
+
+  "com.minecolonies.research.combat.mage_armory_2.name": "การพัฒนายุทธภัณฑ์เวท",
+  "com.minecolonies.research.combat.mage_armory_2.subtitle": "จัดหาคัมภีร์ที่แข็งแกร่งขึ้นและอุปกรณ์ร่ายเวทที่มีสมดุลพลัง",
+  "com.minecolonies.research.effects.mage_armory_2.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 2: Apprentice's Spell Book, Ironbound Tome, Artificer's Cane, และ Amethyst Rapier",
+
+  "com.minecolonies.research.combat.mage_armory_3.name": "ศาสตร์เวทชำนาญธาตุ",
+  "com.minecolonies.research.combat.mage_armory_3.subtitle": "ควบคุมพลังธาตุปฐมกาลแห่งไฟ น้ำแข็ง และสายฟ้า",
+  "com.minecolonies.research.effects.mage_armory_3.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 3: Enchanted Spell Book, Blaze Manual, Frostbranded Book, Ice Staff, Rod o' Lightning, และ Pyrium Staff",
+
+  "com.minecolonies.research.combat.mage_armory_4.name": "ศาสตร์มหาจอมเวท",
+  "com.minecolonies.research.combat.mage_armory_4.subtitle": "ปลดล็อคม้วนคัมภีร์โบราณ กริมัวร์อัญเชิญ และเวทมนตร์มิติ",
+  "com.minecolonies.research.effects.mage_armory_4.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 4: Grimoire of Evokation, Villager Bible, Dragonskin Book, Vampiric Book, Hither-Thither Wand, และ Spellbreaker",
+
+  "com.minecolonies.research.combat.mage_armory_5.name": "โบราณวัตถุจุติบรรพกาล",
+  "com.minecolonies.research.combat.mage_armory_5.subtitle": "ครอบครองโบราณวัตถุเนเธอไรต์ต้องห้ามและพลังมนตราโบราณที่สาบสูญ",
+  "com.minecolonies.research.effects.mage_armory_5.description": "อนุญาตให้อนุญาตใช้อุปกรณ์เวท Tier 5: Ancient Codex, Necronomicon, The Blood Staff, และ Decrepit Flamberge",
+
+  "com.minecolonies.research.combat.mage_focus_1.name": "การเพ่งสมาธิเวทมนตร์ I",
+  "com.minecolonies.research.combat.mage_focus_1.subtitle": "ศาสตร์การทำสมาธิรวบรวมพลังเวทภายในกาย",
+  "com.minecolonies.research.effects.mage_damage_1.description": "เพิ่มความเสียหายเวทมนตร์ของจอมเวทขึ้น +10%",
+
+  "com.minecolonies.research.combat.mage_focus_2.name": "การเพ่งสมาธิเวทมนตร์ II",
+  "com.minecolonies.research.combat.mage_focus_2.subtitle": "ปรับสมดุลสายธารมานาเพื่อการก้องกังวานของพลังเวทที่ลึกซึ้ง",
+  "com.minecolonies.research.effects.mage_damage_2.description": "เพิ่มความเสียหายเวทมนตร์ของจอมเวทขึ้นอีก +10% (รวม +20%)",
+
+  "com.minecolonies.research.combat.mage_focus_3.name": "การเพ่งสมาธิเวทมนตร์ III",
+  "com.minecolonies.research.combat.mage_focus_3.subtitle": "การหลอมรวมแก่นมานาบริสุทธิ์ที่ไหลเวียนในทุกบทสวดคาถา",
+  "com.minecolonies.research.effects.mage_damage_3.description": "เพิ่มความเสียหายเวทมนตร์ของจอมเวทขึ้นอีก +10% (รวม +30%)",
+
+  "com.minecolonies.research.combat.mage_focus_4.name": "การก้าวข้ามขีดจำกัดแห่งมหาปราชญ์",
+  "com.minecolonies.research.combat.mage_focus_4.subtitle": "ก้าวข้ามขีดจำกัดของมนุษย์สู่การร่ายคาถาแทบจะในพริบตา",
+  "com.minecolonies.research.effects.mage_damage_4.description": "เพิ่มความเสียหายเวทมนตร์ของจอมเวทขึ้น +10% (รวม +40%) และลดระยะเวลารอคูลดาวน์ร่ายเวทลง -15%"
 }

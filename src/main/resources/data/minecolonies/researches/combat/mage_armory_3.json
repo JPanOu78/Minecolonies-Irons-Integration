@@ -1,0 +1,35 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 64,
+      "item": "irons_spellbooks:arcane_essence"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:iron_block"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/mage_armory_3",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:blaze_powder",
+  "parentResearch": "minecolonies:combat/mage_armory_2",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 3
+    }
+  ],
+  "researchLevel": 3,
+  "sortOrder": 3,
+  "subtitle": "com.minecolonies.research.combat.mage_armory_3.subtitle"
+}

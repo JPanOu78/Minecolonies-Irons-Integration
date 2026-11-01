@@ -1,0 +1,31 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 128,
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "count": 32,
+      "item": "minecraft:flint"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/gunner_damage_2",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:target",
+  "parentResearch": "minecolonies:combat/gunner_practice_1",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 3
+    }
+  ],
+  "researchLevel": 3,
+  "sortOrder": 2,
+  "subtitle": "com.minecolonies.research.combat.gunner_practice_2.subtitle"
+}

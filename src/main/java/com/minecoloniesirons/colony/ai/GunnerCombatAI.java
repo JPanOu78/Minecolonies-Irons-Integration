@@ -1,11 +1,15 @@
 package com.minecoloniesirons.colony.ai;
 
+import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.ITickRateStateMachine;
+import com.minecolonies.api.research.IResearchEffectManager;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.ai.workers.guard.RangeCombatAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import com.minecolonies.core.util.citizenutils.CitizenItemUtils;
+import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,10 +20,17 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Gunner Combat AI: Maintains tactical ranged distance (10-18 blocks),
- * equips and checks for Iron's Artifice firearms (Musket, Pistol, Blunderbuss, Revolver, Rifle) & Ammo,
- * executes volley firing patterns, reload intervals, and kiting movement.
+ * equips and checks for Iron's Artifice firearms (Tier 1: Pistols/Revolvers, Tier 2: Muskets/Blunderbusses, Tier 3: Arquebus/Clockwork),
+ * checks colony research unlock tiers, and applies Target Practice damage multipliers.
  */
 public class GunnerCombatAI extends RangeCombatAI {
+
+    public static final ResourceLocation EFFECT_GUNNER = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner");
+    public static final ResourceLocation EFFECT_GUNNER_ARMORY_2 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_2");
+    public static final ResourceLocation EFFECT_GUNNER_ARMORY_3 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_3");
+    public static final ResourceLocation EFFECT_GUNNER_DAMAGE_1 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_1");
+    public static final ResourceLocation EFFECT_GUNNER_DAMAGE_2 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_2");
+    public static final ResourceLocation EFFECT_GUNNER_DAMAGE_3 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_3");
 
     private int shotsFiredInVolley = 0;
     private boolean isReloading = false;
@@ -34,7 +45,7 @@ public class GunnerCombatAI extends RangeCombatAI {
             return false;
         }
 
-        // Auto-equip firearm and ammo from inventory if not already holding a gun
+        // Auto-equip firearm according to unlocked research tier
         equipFirearmGear();
 
         return true;
@@ -43,33 +54,58 @@ public class GunnerCombatAI extends RangeCombatAI {
     private void equipFirearmGear() {
         if (this.user == null) return;
 
+        int maxAllowedTier = getMaxAllowedTier();
+
         ItemStack main = this.user.getMainHandItem();
-        String mainName = main.getItem().toString().toLowerCase();
-
-        boolean holdingGun = mainName.contains("musket") || mainName.contains("pistol")
-                || mainName.contains("rifle") || mainName.contains("blunderbuss")
-                || mainName.contains("arquebus") || mainName.contains("gun")
-                || mainName.contains("revolver");
-
-        if (holdingGun) {
-            return;
+        if (!main.isEmpty() && ModIronsEquipmentTypes.isGunItem(main)) {
+            int currentTier = ModIronsEquipmentTypes.getGunLevel(main);
+            if (currentTier <= maxAllowedTier) {
+                return; // Already holding a valid, permitted gun
+            }
         }
 
         var inv = this.user.getInventoryCitizen();
+        int bestSlot = -1;
+        int bestTier = 0;
+
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
-            if (stack.isEmpty()) continue;
-            String itemName = stack.getItem().toString().toLowerCase();
+            if (stack.isEmpty() || !ModIronsEquipmentTypes.isGunItem(stack)) continue;
 
-            // Equip firearm in main hand
-            if (itemName.contains("musket") || itemName.contains("pistol")
-                    || itemName.contains("rifle") || itemName.contains("blunderbuss")
-                    || itemName.contains("arquebus") || itemName.contains("gun")
-                    || itemName.contains("revolver")) {
-                CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, i);
-                break;
+            int tier = ModIronsEquipmentTypes.getGunLevel(stack);
+            if (tier <= maxAllowedTier && tier > bestTier) {
+                bestTier = tier;
+                bestSlot = i;
             }
         }
+
+        if (bestSlot != -1) {
+            CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, bestSlot);
+        }
+    }
+
+    private int getMaxAllowedTier() {
+        if (this.user == null) return 1;
+        IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
+        if (colony == null) return 1;
+
+        IResearchEffectManager rem = colony.getResearchManager().getResearchEffects();
+        if (rem.getEffectStrength(EFFECT_GUNNER_ARMORY_3) > 0) return 3;
+        if (rem.getEffectStrength(EFFECT_GUNNER_ARMORY_2) > 0) return 2;
+        return 1;
+    }
+
+    private float getDamageMultiplier() {
+        float mult = 1.0F;
+        if (this.user == null) return mult;
+        IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
+        if (colony == null) return mult;
+
+        IResearchEffectManager rem = colony.getResearchManager().getResearchEffects();
+        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_1) > 0) mult += 0.10F;
+        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_2) > 0) mult += 0.10F;
+        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_3) > 0) mult += 0.10F;
+        return mult;
     }
 
     @Override
@@ -84,7 +120,6 @@ public class GunnerCombatAI extends RangeCombatAI {
             return 50; // 2.5s reload delay after full volley
         }
 
-        // Rifle/Revolver fires faster; Musket/Arquebus has standard cadence
         ItemStack weapon = this.user.getMainHandItem();
         String weaponName = weapon.getItem().toString().toLowerCase();
         if (weaponName.contains("clockwork") || weaponName.contains("revolver") || weaponName.contains("six")) {
@@ -137,24 +172,25 @@ public class GunnerCombatAI extends RangeCombatAI {
                     3, 0.02D, 0.02D, 0.02D, 0.01D
             );
 
-            // Calculate damage based on weapon tier and type
+            // Calculate base damage depending on weapon tier
             float baseDamage = 8.0F;
             if (isBlunderbuss) {
-                // High spread burst damage
                 baseDamage = 11.0F;
                 serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 15, 0.6D, 0.6D, 0.6D, 0.1D);
             } else if (isSniper) {
-                // High precision heavy damage
-                baseDamage = 14.0F;
+                baseDamage = 15.0F;
                 serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 8, 0.2D, 0.2D, 0.2D, 0.2D);
             } else {
                 serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 6, 0.3D, 0.3D, 0.3D, 0.1D);
             }
 
-            // Apply bullet damage
-            target.hurt(this.user.damageSources().mobAttack(this.user), baseDamage);
+            // Apply Target Practice research damage multiplier
+            float totalDamage = baseDamage * getDamageMultiplier();
 
-            // Push target back slightly (bullet impact knockback)
+            // Apply bullet damage
+            target.hurt(this.user.damageSources().mobAttack(this.user), totalDamage);
+
+            // Push target back (bullet impact knockback)
             target.knockback(0.35D, -direction.x, -direction.z);
         }
 

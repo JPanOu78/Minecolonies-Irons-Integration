@@ -4,6 +4,7 @@ import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.core.colony.buildings.AbstractBuildingGuards;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
+import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
 import com.minecoloniesirons.colony.jobs.JobGunner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -12,6 +13,10 @@ public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBui
 
     public EntityAIGunner(JobGunner job) {
         super(job);
+
+        // Require firearm tool for this job (triggers requests in colony when missing)
+        this.toolsNeeded.add(ModIronsEquipmentTypes.GUN.get());
+
         if (this.worker instanceof EntityCitizen entityCitizen) {
             new GunnerCombatAI(entityCitizen, this.getStateAI(), this);
         }

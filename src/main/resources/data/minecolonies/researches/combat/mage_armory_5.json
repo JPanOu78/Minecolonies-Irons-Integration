@@ -1,0 +1,31 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 256,
+      "item": "irons_spellbooks:arcane_essence"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:netherite_ingot"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/mage_armory_5",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:netherite_ingot",
+  "parentResearch": "minecolonies:combat/mage_armory_4",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 5
+    }
+  ],
+  "researchLevel": 5,
+  "sortOrder": 3,
+  "subtitle": "com.minecolonies.research.combat.mage_armory_5.subtitle"
+}

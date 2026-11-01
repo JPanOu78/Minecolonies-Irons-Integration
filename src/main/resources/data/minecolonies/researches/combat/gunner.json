@@ -2,12 +2,16 @@
   "branch": "minecolonies:combat",
   "costs": [
     {
-      "count": 5,
-      "item": "minecraft:iron_ingot"
+      "count": 8,
+      "item": "minecraft:gunpowder"
     },
     {
-      "count": 5,
-      "item": "minecraft:gunpowder"
+      "count": 8,
+      "item": "minecraft:flint"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:iron_ingot"
     }
   ],
   "effects": [
@@ -25,5 +29,6 @@
     }
   ],
   "researchLevel": 1,
-  "sortOrder": 1
+  "sortOrder": 1,
+  "subtitle": "com.minecolonies.research.combat.gunner.subtitle"
 }

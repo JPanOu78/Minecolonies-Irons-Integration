@@ -4,6 +4,7 @@ import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.core.colony.buildings.AbstractBuildingGuards;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
+import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
 import com.minecoloniesirons.colony.jobs.JobMage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -12,6 +13,10 @@ public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildin
 
     public EntityAIMage(JobMage job) {
         super(job);
+
+        // Require spell focus / staff / spellbook tool for this job (triggers requests in colony when missing)
+        this.toolsNeeded.add(ModIronsEquipmentTypes.SPELL_FOCUS.get());
+
         if (this.worker instanceof EntityCitizen entityCitizen) {
             new MageCombatAI(entityCitizen, this.getStateAI(), this);
         }

@@ -1,0 +1,31 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 512,
+      "item": "irons_spellbooks:arcane_essence"
+    },
+    {
+      "count": 64,
+      "item": "minecraft:amethyst_shard"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/mage_damage_4",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:nether_star",
+  "parentResearch": "minecolonies:combat/mage_focus_3",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 5
+    }
+  ],
+  "researchLevel": 5,
+  "sortOrder": 4,
+  "subtitle": "com.minecolonies.research.combat.mage_focus_4.subtitle"
+}
