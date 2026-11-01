@@ -32,3 +32,4 @@ public enum MageRobeSchool {
         return minTier;
     }
 }
+

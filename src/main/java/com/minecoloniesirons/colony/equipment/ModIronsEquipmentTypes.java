@@ -2,13 +2,13 @@ package com.minecoloniesirons.colony.equipment;
 
 import com.minecolonies.api.equipment.registry.EquipmentTypeEntry;
 import com.minecolonies.apiimp.CommonMinecoloniesAPIImpl;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,11 +21,10 @@ public final class ModIronsEquipmentTypes {
 
     // Item Tags for Iron's Arms 'n Artifice Firearms & Ammunition (strictly Iron's Artifice only)
     public static final TagKey<Item> TAG_IRONS_ARTIFICE_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_artifice", "guns"));
-    public static final TagKey<Item> TAG_IRONS_ARTIFICE_BULLETS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_artifice", "bullets"));
+    public static final TagKey<Item> TAG_IRONS_ARTIFICE_BULLETS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_artifice", "ammo"));
 
     // Item Tags for Iron's Spells 'n Spellbooks
-    public static final TagKey<Item> TAG_IRONS_SPELL_BOOKS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "spell_books"));
-    public static final TagKey<Item> TAG_IRONS_STAVES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "staves"));
+    public static final TagKey<Item> TAG_IRONS_STAFF = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "staff"));
     public static final TagKey<Item> TAG_CURIOS_SPELLBOOK = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "spellbook"));
 
     public static final DeferredRegister<EquipmentTypeEntry> DEFERRED_REGISTER =
@@ -72,12 +71,13 @@ public final class ModIronsEquipmentTypes {
         if (path.contains("bullet") || path.contains("powder") || path.contains("component")
                 || path.contains("modifier") || path.contains("hat") || path.contains("box")
                 || path.contains("container") || path.contains("sheet") || path.contains("gear")
-                || path.contains("ingot") || path.contains("scrap")) {
+                || path.contains("ingot") || path.contains("scrap") || path.contains("egg")
+                || path.contains("tricorne")) {
             return false;
         }
 
-        return path.contains("pistol") || path.contains("revolver") || path.contains("six_shooter")
-                || path.contains("musket") || path.contains("blunderbuss")
+        return path.contains("flintlock") || path.contains("pistol") || path.contains("revolver")
+                || path.contains("six_shooter") || path.contains("musket") || path.contains("blunderbuss")
                 || path.contains("arquebus") || path.contains("clockwork") || path.contains("rifle");
     }
 
@@ -90,7 +90,7 @@ public final class ModIronsEquipmentTypes {
         if (id.contains("arquebus") || id.contains("clockwork") || id.contains("rifle")) return 3;
         // Tier 2: Musket, Blunderbuss
         if (id.contains("musket") || id.contains("blunderbuss")) return 2;
-        // Tier 1: Flintlock Pistol, Blackpowder Revolver, Six Shooter
+        // Tier 1: Flintlock, Blackpowder Revolver, Six Shooter
         return 1;
     }
 
@@ -129,10 +129,10 @@ public final class ModIronsEquipmentTypes {
 
     /**
      * Returns the preferred item stack to request for a firearm.
-     * Requests Iron's Artifice flintlock pistol as the standard baseline weapon.
+     * Requests Iron's Artifice flintlock as the standard baseline weapon.
      */
     public static ItemStack getGunRequestStack() {
-        ResourceLocation gunId = ResourceLocation.fromNamespaceAndPath("irons_artifice", "flintlock_pistol");
+        ResourceLocation gunId = ResourceLocation.fromNamespaceAndPath("irons_artifice", "flintlock");
         Item gunItem = BuiltInRegistries.ITEM.get(gunId);
         if (gunItem != null && gunItem != Items.AIR) {
             return new ItemStack(gunItem);
@@ -142,15 +142,45 @@ public final class ModIronsEquipmentTypes {
 
     /**
      * Returns the preferred item stack to request for a spell focus.
-     * Requests Iron's Spells flimsy journal as the standard baseline spellbook.
+     * Requests Iron's Spells copper spell book as the standard baseline spellbook.
      */
     public static ItemStack getSpellFocusRequestStack() {
-        ResourceLocation bookId = ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "flimsy_journal");
+        ResourceLocation bookId = ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "copper_spell_book");
         Item bookItem = BuiltInRegistries.ITEM.get(bookId);
         if (bookItem != null && bookItem != Items.AIR) {
             return new ItemStack(bookItem);
         }
         return ItemStack.EMPTY;
+    }
+
+    /**
+     * Checks if the stack is a valid spellbook from Iron's Spells 'n Spellbooks.
+     */
+    public static boolean isSpellBook(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        if (stack.is(TAG_CURIOS_SPELLBOOK)) return true;
+        if (ISpellContainer.isSpellContainer(stack)) return true;
+        ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (!key.getNamespace().equals("irons_spellbooks")) return false;
+        String path = key.getPath();
+        return path.endsWith("_spell_book") || path.equals("wimpy_spell_book");
+    }
+
+    /**
+     * Checks if the stack is a valid staff, wand, or spellcasting weapon.
+     */
+    public static boolean isStaff(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        if (stack.is(TAG_IRONS_STAFF)) return true;
+        ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (!key.getNamespace().equals("irons_spellbooks")) return false;
+        String path = key.getPath();
+        return path.endsWith("_staff") || path.equals("artificer_cane") || path.equals("graybeard_staff")
+                || path.equals("lightning_rod") || path.equals("hither_thither_wand")
+                || path.equals("magehunter") || path.equals("spellbreaker") || path.equals("amethyst_rapier")
+                || path.equals("keeper_flamberge") || path.equals("claymore") || path.equals("misery")
+                || path.equals("legionnaire_flamberge") || path.equals("decrepit_scythe") || path.equals("hellrazor")
+                || path.equals("boreal_blade") || path.equals("twilight_gale");
     }
 
     /**
@@ -174,20 +204,14 @@ public final class ModIronsEquipmentTypes {
                 || path.contains("scrap") || path.contains("helmet") || path.contains("chestplate")
                 || path.contains("leggings") || path.contains("boots") || path.contains("robe")
                 || path.contains("curio") || path.contains("ring") || path.contains("necklace")
-                || path.contains("upgrade_orb") || path.contains("shriving_stone") || path.contains("cinder_essence")) {
+                || path.contains("upgrade_orb") || path.contains("shriving_stone") || path.contains("cinder_essence")
+                || path.contains("bookshelf") || path.contains("raw_") || path.contains("ore")
+                || path.contains("salvage") || path.contains("book_stack") || path.contains("logbook")
+                || path.contains("bottle") || path.contains("crystal") || path.contains("pouch")) {
             return false;
         }
 
-        // Priority 1: Check official tags
-        if (stack.is(TAG_IRONS_SPELL_BOOKS) || stack.is(TAG_IRONS_STAVES) || stack.is(TAG_CURIOS_SPELLBOOK)) {
-            return true;
-        }
-
-        // Priority 2: Whitelist exact weapon and spellbook identifiers
-        return path.endsWith("_spell_book") || path.endsWith("_staff") || path.endsWith("_wand")
-                || path.endsWith("_cane") || path.endsWith("_rapier") || path.endsWith("_flamberge")
-                || path.equals("flimsy_journal") || path.equals("villager_bible") || path.equals("ancient_codex")
-                || path.equals("spellbreaker") || path.equals("the_blood_staff");
+        return isSpellBook(stack) || isStaff(stack);
     }
 
     /**
@@ -195,24 +219,28 @@ public final class ModIronsEquipmentTypes {
      */
     public static int getSpellItemLevel(ItemStack stack) {
         String id = stack.getItem().toString().toLowerCase();
-        // Tier 5: Ancient Codex, Necronomicon, The Blood Staff, Decrepit Flamberge
-        if (id.contains("ancient") || id.contains("codex") || id.contains("necronomicon")
-                || id.contains("blood_staff") || id.contains("flamberge")) return 5;
-        // Tier 4: Villager Bible, Evoker Spell Book, Dragonskin Book, Vampiric Book, Hither-Thither Wand, Spellbreaker
-        if (id.contains("bible") || id.contains("evoker") || id.contains("dragonskin")
-                || id.contains("vampiric") || id.contains("hither") || id.contains("spellbreaker")) return 4;
-        // Tier 3: Enchanted Spell Book, Blaze Manual, Frostbranded Book, Druidic Tome, Ice Staff, Lightning Rod, Pyrium Staff
-        if (id.contains("enchanted") || id.contains("blaze") || id.contains("frost")
-                || id.contains("druid") || id.contains("lightning") || id.contains("pyrium")) return 3;
-        // Tier 2: Apprentice's Spell Book, Ironbound Tome, Artificer's Cane, Amethyst Rapier
-        if (id.contains("apprentice") || id.contains("ironbound") || id.contains("artificer")
-                || id.contains("rapier")) return 2;
-        // Tier 1: Flimsy Journal, Rotten Spell Book, Graybeard Staff
+        // Tier 5: Netherite Spell Book, Legendary Spell Book, Necronomicon, The Blood Staff, Decrepit Scythe, Twilight Gale, Boreal Blade
+        if (id.contains("netherite") || id.contains("legendary") || id.contains("necronomicon")
+                || id.contains("blood_staff") || id.contains("scythe") || id.contains("twilight")
+                || id.contains("boreal")) return 5;
+        // Tier 4: Diamond Spell Book, Dragonskin Book, Villager Book, Evoker Book, Spellbreaker, Hither-Thither Wand, Hellrazor
+        if (id.contains("diamond") || id.contains("dragonskin") || id.contains("villager")
+                || id.contains("evoker") || id.contains("hither") || id.contains("spellbreaker")
+                || id.contains("hellrazor")) return 4;
+        // Tier 3: Gold Spell Book, Blaze Book, Druidic Book, Ice Spell Book, Cursed Doll Book, Pyrium Staff, Lightning Rod, Keeper Flamberge, Magehunter
+        if (id.contains("gold") || id.contains("blaze") || id.contains("druidic")
+                || id.contains("ice_spell_book") || id.contains("ice_staff") || id.contains("cursed_doll")
+                || id.contains("lightning") || id.contains("pyrium") || id.contains("keeper")
+                || id.contains("magehunter")) return 3;
+        // Tier 2: Iron Spell Book, Apprentice, Artificer's Cane, Amethyst Rapier, Misery, Legionnaire Flamberge, Claymore
+        if (id.contains("iron_spell_book") || id.contains("artificer") || id.contains("rapier")
+                || id.contains("misery") || id.contains("legionnaire") || id.contains("claymore")) return 2;
+        // Tier 1: Copper Spell Book, Rotten Spell Book, Wimpy Spell Book, Graybeard Staff
         return 1;
     }
 
     /**
-     * Checks if the stack is a valid magic robe or mage armor from Iron's Spells 'n Spellbooks.
+     * Checks if the stack is a valid magic robe or mage armor piece from Iron's Spells 'n Spellbooks.
      */
     public static boolean isRobeItem(ItemStack stack) {
         if (stack.isEmpty()) return false;

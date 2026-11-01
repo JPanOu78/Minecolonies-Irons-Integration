@@ -9,12 +9,15 @@ import com.minecolonies.core.entity.ai.workers.guard.RangeCombatAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import com.minecolonies.core.util.citizenutils.CitizenItemUtils;
 import com.minecoloniesirons.colony.equipment.ModIronsEquipmentTypes;
-import net.minecraft.core.particles.ParticleTypes;
+import io.redspace.irons_artifice.item.FireOutcome;
+import io.redspace.irons_artifice.item.GunItem;
+import io.redspace.irons_artifice.item.GunplayManager;
+import io.redspace.irons_artifice.item.MagazineContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,8 +28,8 @@ import net.minecraft.world.phys.Vec3;
  * Gunner Combat AI: Maintains tactical ranged distance (10-18 blocks),
  * equips and checks for Iron's Artifice firearms across Tier 1 to 3 according to research unlocks,
  * requires and consumes ammunition (bullets),
- * applies Recoil Compensation (faster cadence & heavier knockback),
- * Tactical Speedloader (extended 6-round volleys & rapid reload),
+ * fires native Iron's Artifice bullets with true physical projectile trajectories, sounds, and animations,
+ * applies Recoil Compensation and Tactical Speedloader from colony research,
  * completely free of environmental explosions and fire damage to preserve colony architecture.
  */
 public class GunnerCombatAI extends RangeCombatAI {
@@ -59,11 +62,17 @@ public class GunnerCombatAI extends RangeCombatAI {
             return false;
         }
 
-        // Auto-equip firearm according to unlocked research tier
+        // Auto-equip highest permitted firearm from inventory
         equipFirearmGear();
 
-        // Must have ammunition to engage in ranged combat
-        return hasAmmo();
+        ItemStack main = this.user.getMainHandItem();
+        if (main.isEmpty() || !ModIronsEquipmentTypes.isGunItem(main)) {
+            return false;
+        }
+
+        // Must have bullets in magazine or inventory
+        int magCount = MagazineContents.get(main).count();
+        return magCount > 0 || hasAmmo();
     }
 
     /**
@@ -82,7 +91,7 @@ public class GunnerCombatAI extends RangeCombatAI {
     }
 
     /**
-     * Consumes 1 bullet from citizen inventory when a shot is fired.
+     * Consumes 1 bullet from citizen inventory when loaded into a firearm.
      */
     public boolean consumeBullet() {
         if (this.user == null) return false;
@@ -97,20 +106,16 @@ public class GunnerCombatAI extends RangeCombatAI {
         return false;
     }
 
+    /**
+     * Scans inventory for the best available firearm matching unlocked research tier,
+     * and equips it directly into MAIN_HAND, dynamically re-rendering the held weapon.
+     */
     public void equipFirearmGear() {
         if (this.user == null) return;
 
         int maxAllowedTier = getMaxAllowedTier();
-
-        ItemStack main = this.user.getMainHandItem();
-        if (!main.isEmpty() && ModIronsEquipmentTypes.isGunItem(main)) {
-            int currentTier = ModIronsEquipmentTypes.getGunLevel(main);
-            if (currentTier <= maxAllowedTier) {
-                return; // Already holding a valid, permitted gun
-            }
-        }
-
         var inv = this.user.getInventoryCitizen();
+
         int bestSlot = -1;
         int bestTier = 0;
 
@@ -126,8 +131,12 @@ public class GunnerCombatAI extends RangeCombatAI {
         }
 
         if (bestSlot != -1) {
-            CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, bestSlot);
-            this.user.setItemSlot(EquipmentSlot.MAINHAND, inv.getStackInSlot(bestSlot));
+            ItemStack bestStack = inv.getStackInSlot(bestSlot);
+            ItemStack currentHeld = this.user.getMainHandItem();
+            if (currentHeld != bestStack && (currentHeld.isEmpty() || !ItemStack.isSameItemSameComponents(currentHeld, bestStack))) {
+                CitizenItemUtils.setHeldItem(this.user, InteractionHand.MAIN_HAND, bestSlot);
+                this.user.setItemSlot(EquipmentSlot.MAINHAND, bestStack);
+            }
         }
     }
 
@@ -152,7 +161,7 @@ public class GunnerCombatAI extends RangeCombatAI {
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_1) > 0) mult += 0.10F;
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_2) > 0) mult += 0.10F;
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_3) > 0) mult += 0.10F;
-        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) mult += 0.10F; // LV 5: total +40%
+        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) mult += 0.10F;
         return mult;
     }
 
@@ -182,12 +191,11 @@ public class GunnerCombatAI extends RangeCombatAI {
 
             int reloadDelay = 50; // Base reload delay (2.5 seconds)
 
-            // LV 5 Tactical Speedloader halves reload time to 25 ticks
+            // LV 5 Tactical Speedloader halves reload time
             if (hasSpeedloader()) {
                 reloadDelay = 25;
             }
 
-            // LV 5 Master Marksman reduces reload delay by an additional 20%
             if (this.user != null) {
                 IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
                 if (colony != null && colony.getResearchManager().getResearchEffects().getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) {
@@ -221,135 +229,68 @@ public class GunnerCombatAI extends RangeCombatAI {
             return;
         }
 
-        // Must consume ammunition to fire
-        if (!consumeBullet()) {
+        // Re-check and equip firearm
+        equipFirearmGear();
+
+        ItemStack weapon = this.user.getMainHandItem();
+        if (weapon.isEmpty() || !ModIronsEquipmentTypes.isGunItem(weapon)) {
             return;
         }
 
-        // Face the target
-        this.user.getLookControl().setLookAt(target, 40.0F, 40.0F);
+        // Align facing directly at target eye position
+        this.user.getLookControl().setLookAt(target, 45.0F, 45.0F);
+        Vec3 diff = target.getEyePosition().subtract(this.user.getEyePosition());
+        double dx = diff.x;
+        double dy = diff.y;
+        double dz = diff.z;
+        double horizDist = Math.sqrt(dx * dx + dz * dz);
+        float yaw = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
+        float pitch = (float) (-(Mth.atan2(dy, horizDist) * (180.0D / Math.PI)));
+        this.user.setYRot(yaw);
+        this.user.setYHeadRot(yaw);
+        this.user.setYBodyRot(yaw);
+        this.user.setXRot(pitch);
 
-        ItemStack weapon = this.user.getMainHandItem();
-        String weaponName = weapon.getItem().toString().toLowerCase();
+        // Check gun magazine: replenish from citizen inventory if needed
+        int currentMag = MagazineContents.get(weapon).count();
+        if (currentMag <= 0) {
+            if (!hasAmmo()) {
+                return; // Out of ammunition!
+            }
+            int capacity = (weapon.getItem() instanceof GunItem gunItem) ? gunItem.magazineCapacity() : 1;
+            int loaded = 0;
+            while (loaded < capacity && consumeBullet()) {
+                loaded++;
+            }
+            if (loaded > 0) {
+                MagazineContents.set(weapon, new MagazineContents(loaded));
+                if (this.user.level() instanceof ServerLevel sl) {
+                    sl.playSound(null, this.user.blockPosition(), SoundEvents.IRON_GOLEM_REPAIR, SoundSource.NEUTRAL, 0.5F, 1.4F);
+                }
+            } else {
+                return;
+            }
+        }
 
-        boolean isBlunderbuss = weaponName.contains("blunderbuss");
-        boolean isSniper = weaponName.contains("arquebus") || weaponName.contains("rifle");
-        boolean recoilReduced = hasRecoilCompensation();
-
-        // Swing arm to simulate gun recoil
+        // Swing arm to trigger player-like visual gunshot animation
         this.user.swing(InteractionHand.MAIN_HAND);
 
-        if (this.user.level() instanceof ServerLevel serverLevel) {
-            Vec3 citizenEye = this.user.getEyePosition();
-            Vec3 targetEye = target.getEyePosition();
-            Vec3 direction = targetEye.subtract(citizenEye).normalize();
+        // Native Iron's Artifice gunshot: spawns Bullet projectile entity with sound, muzzle flash & recoil
+        Vec3 targetEye = target.getEyePosition();
+        FireOutcome outcome = GunplayManager.tryFire(this.user, targetEye);
 
-            // Gunshot sound
-            serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.6F, 1.8F);
-
-            // Muzzle smoke and flash
-            Vec3 muzzlePos = citizenEye.add(direction.scale(0.85D));
-            serverLevel.sendParticles(
-                    ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                    muzzlePos.x, muzzlePos.y, muzzlePos.z,
-                    6, 0.05D, 0.05D, 0.05D, 0.02D
-            );
-            serverLevel.sendParticles(
-                    ParticleTypes.FLAME,
-                    muzzlePos.x, muzzlePos.y, muzzlePos.z,
-                    3, 0.02D, 0.02D, 0.02D, 0.01D
-            );
-
-            // Render visible bullet flight trajectory from muzzle to target
-            renderBulletFlight(serverLevel, muzzlePos, targetEye, isBlunderbuss, isSniper);
-
-            // Calculate base damage depending on weapon tier
-            float baseDamage = 8.0F;
-            if (isBlunderbuss) {
-                baseDamage = 11.0F;
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 15, 0.5D, 0.5D, 0.5D, 0.15D);
-            } else if (isSniper) {
-                baseDamage = 15.0F;
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 10, 0.2D, 0.2D, 0.2D, 0.2D);
-                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, targetEye.x, targetEye.y, targetEye.z, 8, 0.2D, 0.2D, 0.2D, 0.1D);
-            } else {
-                serverLevel.sendParticles(ParticleTypes.CRIT, targetEye.x, targetEye.y, targetEye.z, 8, 0.25D, 0.25D, 0.25D, 0.1D);
+        if (!outcome.fired()) {
+            if (outcome == FireOutcome.EMPTY_MAGAZINE && consumeBullet()) {
+                MagazineContents.set(weapon, new MagazineContents(1));
+                GunplayManager.tryFire(this.user, targetEye);
             }
-            serverLevel.sendParticles(ParticleTypes.POOF, targetEye.x, targetEye.y, targetEye.z, 3, 0.1D, 0.1D, 0.1D, 0.02D);
-
-            // Apply Target Practice research damage multiplier
-            float totalDamage = baseDamage * getDamageMultiplier();
-
-            // Apply bullet damage directly to target (100% safe, no terrain or AoE damage)
-            target.hurt(this.user.damageSources().mobAttack(this.user), totalDamage);
-
-            // Knockback on target (Recoil Compensation increases stopping power)
-            double knockbackPower = recoilReduced ? 0.55D : 0.35D;
-            target.knockback(knockbackPower, -direction.x, -direction.z);
         }
 
         this.shotsFiredInVolley++;
-
-        // Volley capacity: 6 rounds if Tactical Speedloader unlocked, else 4 rounds
         int volleyCapacity = hasSpeedloader() ? 6 : 4;
-
         if (this.shotsFiredInVolley >= volleyCapacity) {
-            // Full reload cycle triggered for next shot
             this.isReloading = true;
             this.shotsFiredInVolley = 0;
-            if (this.user.level() instanceof ServerLevel sl) {
-                sl.playSound(null, this.user.blockPosition(), SoundEvents.IRON_GOLEM_REPAIR, SoundSource.NEUTRAL, 0.5F, 1.4F);
-            }
-        }
-    }
-
-    /**
-     * Renders a visible, supersonic bullet flight trajectory from gun muzzle to target.
-     * Supports scattershot pellet cone for Blunderbuss, piercing sparks for rifles, and smoke tracers.
-     */
-    public static void renderBulletFlight(ServerLevel level, Vec3 start, Vec3 end, boolean isBlunderbuss, boolean isSniper) {
-        if (isBlunderbuss) {
-            // Shotgun scattershot: 5 distinct pellet trajectories spreading outward
-            RandomSource rnd = level.getRandom();
-            for (int p = 0; p < 5; p++) {
-                double spreadX = (rnd.nextDouble() - 0.5D) * 1.5D;
-                double spreadY = (rnd.nextDouble() - 0.5D) * 1.5D;
-                double spreadZ = (rnd.nextDouble() - 0.5D) * 1.5D;
-                Vec3 spreadEnd = end.add(spreadX, spreadY, spreadZ);
-
-                double dist = start.distanceTo(spreadEnd);
-                int steps = Math.max(3, (int) (dist / 0.5D));
-                for (int i = 1; i <= steps; i++) {
-                    double progress = (double) i / steps;
-                    Vec3 pos = start.lerp(spreadEnd, progress);
-                    level.sendParticles(ParticleTypes.CRIT, pos.x, pos.y, pos.z, 1, 0.02D, 0.02D, 0.02D, 0.0D);
-                    if (i % 3 == 0) {
-                        level.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0.01D, 0.01D, 0.01D, 0.0D);
-                    }
-                }
-            }
-            return;
-        }
-
-        // Standard or Sniper supersonic tracer line
-        double dist = start.distanceTo(end);
-        int steps = Math.max(4, (int) (dist / 0.35D));
-        for (int i = 1; i <= steps; i++) {
-            double progress = (double) i / steps;
-            Vec3 pos = start.lerp(end, progress);
-
-            // Dense supersonic crit spark trail
-            level.sendParticles(ParticleTypes.CRIT, pos.x, pos.y, pos.z, 2, 0.02D, 0.02D, 0.02D, 0.01D);
-
-            // Whisp of gunsmoke along the path
-            if (i % 2 == 0) {
-                level.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0.01D, 0.01D, 0.01D, 0.0D);
-            }
-
-            // Sniper rifle electric tracer streak
-            if (isSniper && i % 3 == 0) {
-                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, pos.x, pos.y, pos.z, 1, 0.02D, 0.02D, 0.02D, 0.0D);
-            }
         }
     }
 }
