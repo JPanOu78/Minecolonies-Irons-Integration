@@ -11,6 +11,8 @@ import net.minecraft.util.RandomSource;
 
 public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBuildingGuards> {
 
+    private GunnerCombatAI combatAI;
+
     public EntityAIGunner(JobGunner job) {
         super(job);
 
@@ -18,13 +20,18 @@ public class EntityAIGunner extends AbstractEntityAIGuard<JobGunner, AbstractBui
         this.toolsNeeded.add(ModIronsEquipmentTypes.GUN.get());
 
         if (this.worker instanceof EntityCitizen entityCitizen) {
-            new GunnerCombatAI(entityCitizen, this.getStateAI(), this);
+            this.combatAI = new GunnerCombatAI(entityCitizen, this.getStateAI(), this);
         }
     }
 
     @Override
     public void guardMovement() {
         if (this.worker == null) return;
+
+        // Ensure firearm is visibly held in main hand during guard patrol
+        if (this.combatAI != null) {
+            this.combatAI.equipFirearmGear();
+        }
         RandomSource random = this.worker.getRandom();
 
         if (random.nextInt(30) < 1) {

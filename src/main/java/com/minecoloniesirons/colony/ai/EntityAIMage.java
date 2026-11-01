@@ -11,6 +11,8 @@ import net.minecraft.util.RandomSource;
 
 public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildingGuards> {
 
+    private MageCombatAI combatAI;
+
     public EntityAIMage(JobMage job) {
         super(job);
 
@@ -18,13 +20,18 @@ public class EntityAIMage extends AbstractEntityAIGuard<JobMage, AbstractBuildin
         this.toolsNeeded.add(ModIronsEquipmentTypes.SPELL_FOCUS.get());
 
         if (this.worker instanceof EntityCitizen entityCitizen) {
-            new MageCombatAI(entityCitizen, this.getStateAI(), this);
+            this.combatAI = new MageCombatAI(entityCitizen, this.getStateAI(), this);
         }
     }
 
     @Override
     public void guardMovement() {
         if (this.worker == null) return;
+
+        // Ensure staff is held in main hand and spellbook in off hand during guard patrol
+        if (this.combatAI != null) {
+            this.combatAI.equipMageGear();
+        }
         RandomSource random = this.worker.getRandom();
 
         if (random.nextInt(30) < 1) {

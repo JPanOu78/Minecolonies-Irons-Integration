@@ -52,7 +52,7 @@ public class MageCombatAI extends RangeCombatAI {
         return true;
     }
 
-    private void equipMageGear() {
+    public void equipMageGear() {
         if (this.user == null) return;
 
         int maxAllowedTier = getMaxAllowedTier();

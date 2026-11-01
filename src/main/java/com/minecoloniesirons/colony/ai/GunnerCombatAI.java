@@ -56,7 +56,7 @@ public class GunnerCombatAI extends RangeCombatAI {
         return true;
     }
 
-    private void equipFirearmGear() {
+    public void equipFirearmGear() {
         if (this.user == null) return;
 
         int maxAllowedTier = getMaxAllowedTier();
