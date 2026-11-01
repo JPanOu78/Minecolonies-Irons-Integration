@@ -15,17 +15,12 @@ public final class ModIronsEquipmentTypes {
 
     public static final String MODID = "minecolonies_irons";
 
-    // Item Tags for Firearms
+    // Official Item Tag for Iron's Arms 'n Artifice Firearms
     public static final TagKey<Item> TAG_IRONS_ARTIFICE_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_artifice", "guns"));
-    public static final TagKey<Item> TAG_COMMON_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "guns"));
-    public static final TagKey<Item> TAG_MINECOLONIES_GUNS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "guns"));
 
-    // Item Tags for Magic / Spell Focus
+    // Official Item Tags for Iron's Spells 'n Spellbooks
     public static final TagKey<Item> TAG_IRONS_SPELL_BOOKS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "spell_books"));
     public static final TagKey<Item> TAG_IRONS_STAVES = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "staves"));
-    public static final TagKey<Item> TAG_CURIO_SPELLBOOK = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("curios", "spellbook"));
-    public static final TagKey<Item> TAG_COMMON_SPELL_FOCUS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "spell_focus"));
-    public static final TagKey<Item> TAG_MINECOLONIES_SPELL_FOCUS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MODID, "spell_focus"));
 
     public static final DeferredRegister<EquipmentTypeEntry> DEFERRED_REGISTER =
             DeferredRegister.create(CommonMinecoloniesAPIImpl.EQUIPMENT_TYPES, MODID);
@@ -52,15 +47,19 @@ public final class ModIronsEquipmentTypes {
 
     public static boolean isGunItem(ItemStack stack) {
         if (stack.isEmpty()) return false;
-        // Priority 1: Check standard & custom Item Tags
-        if (stack.is(TAG_IRONS_ARTIFICE_GUNS) || stack.is(TAG_COMMON_GUNS) || stack.is(TAG_MINECOLONIES_GUNS)) {
+        // Strictly check Iron's Artifice official weapon tag
+        if (stack.is(TAG_IRONS_ARTIFICE_GUNS)) {
             return true;
         }
-        // Priority 2: Fallback check by item name / registry path
-        String id = stack.getItem().toString().toLowerCase();
-        return id.contains("pistol") || id.contains("revolver") || id.contains("musket")
-                || id.contains("blunderbuss") || id.contains("arquebus") || id.contains("rifle")
-                || id.contains("six_shooter") || id.contains("artifice");
+        // Direct Iron's Artifice item check fallback
+        ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (!key.getNamespace().equals("irons_artifice")) {
+            return false;
+        }
+        String path = key.getPath();
+        return path.contains("pistol") || path.contains("revolver") || path.contains("musket")
+                || path.contains("blunderbuss") || path.contains("arquebus") || path.contains("rifle")
+                || path.contains("six_shooter");
     }
 
     public static int getGunLevel(ItemStack stack) {
@@ -75,19 +74,20 @@ public final class ModIronsEquipmentTypes {
 
     public static boolean isSpellItem(ItemStack stack) {
         if (stack.isEmpty()) return false;
-        // Priority 1: Check standard & custom Item Tags
-        if (stack.is(TAG_IRONS_SPELL_BOOKS) || stack.is(TAG_IRONS_STAVES)
-                || stack.is(TAG_CURIO_SPELLBOOK) || stack.is(TAG_COMMON_SPELL_FOCUS)
-                || stack.is(TAG_MINECOLONIES_SPELL_FOCUS)) {
+        // Strictly check Iron's Spells official weapon tags
+        if (stack.is(TAG_IRONS_SPELL_BOOKS) || stack.is(TAG_IRONS_STAVES)) {
             return true;
         }
-        // Priority 2: Fallback check by item name / registry path
-        String id = stack.getItem().toString().toLowerCase();
-        return id.contains("staff") || id.contains("wand") || id.contains("cane")
-                || id.contains("spell") || id.contains("tome") || id.contains("grimoire")
-                || id.contains("codex") || id.contains("journal") || id.contains("bible")
-                || id.contains("rapier") || id.contains("flamberge")
-                || id.contains("irons_spellbooks");
+        // Direct Iron's Spells item check fallback
+        ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (!key.getNamespace().equals("irons_spellbooks")) {
+            return false;
+        }
+        String path = key.getPath();
+        return path.contains("staff") || path.contains("wand") || path.contains("cane")
+                || path.contains("spell") || path.contains("tome") || path.contains("grimoire")
+                || path.contains("codex") || path.contains("journal") || path.contains("bible")
+                || path.contains("rapier") || path.contains("flamberge");
     }
 
     public static int getSpellItemLevel(ItemStack stack) {
