@@ -12,6 +12,8 @@
 
   "minecolonies:gunner.job.desc": "Equipped with firearms from Iron's Artifice. Delivers devastating ranged volleys and kites enemies.",
   "minecolonies:mage.job.desc": "Harnesses arcane arts from Iron's Spells. Casts offensive and supportive spells to protect the colony.",
+  "minecolonies_irons:gunner.skills.desc": "Affects firearm reload speed, cadence, and accuracy.",
+  "minecolonies_irons:mage.skills.desc": "Affects mana pool, spell power, and casting speed.",
 
   "com.minecolonies.research.combat.gunner.name": "Firearms Training",
   "com.minecolonies.research.combat.gunner.subtitle": "Introduce gunpowder weaponry to the colony defense.",
@@ -25,13 +27,13 @@
   "com.minecolonies.research.combat.gunner_armory_3.subtitle": "Harness high-precision mechanisms and devastating munitions.",
   "com.minecolonies.research.effects.gunner_armory_3.description": "Permits Tier 3 firearms: Arquebuses and Clockwork Rifles.",
 
-  "com.minecolonies.research.combat.gunner_armory_4.name": "Precision Engineering",
-  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "Calibrated iron sights and stabilized barrels.",
-  "com.minecolonies.research.effects.gunner_armory_4.description": "Enables advanced long-range firearm calibration and stabilization.",
+  "com.minecolonies.research.combat.gunner_armory_4.name": "Recoil Stabilization",
+  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "Dampen firearm recoil for higher fire rate and stopping power.",
+  "com.minecolonies.research.effects.gunner_armory_4.description": "Reduces delay between shots by -25% and enhances bullet impact knockback on targets.",
 
-  "com.minecolonies.research.combat.gunner_armory_5.name": "Alchemical Munitions",
-  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "Incendiary and explosive charges infused into heavy shot.",
-  "com.minecolonies.research.effects.gunner_armory_5.description": "Gunner shots trigger explosive splash damage (AoE) and ignite surrounding enemies.",
+  "com.minecolonies.research.combat.gunner_armory_5.name": "Tactical Speedloader",
+  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "Advanced cylinder and magazine loading mechanisms for rapid continuous fire.",
+  "com.minecolonies.research.effects.gunner_armory_5.description": "Extends volley capacity to 6 continuous rounds and cuts reload time in half. Completely safe for colony structures.",
 
   "com.minecolonies.research.combat.gunner_practice_1.name": "Target Practice I",
   "com.minecolonies.research.combat.gunner_practice_1.subtitle": "Train marksmen in steady aiming and volley discipline.",

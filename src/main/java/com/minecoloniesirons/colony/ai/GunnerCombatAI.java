@@ -16,16 +16,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 /**
  * Gunner Combat AI: Maintains tactical ranged distance (10-18 blocks),
  * equips and checks for Iron's Artifice firearms across Tier 1 to 5,
- * checks colony research unlock tiers, applies Target Practice damage multipliers,
- * faster reload at LV 5 Master Marksman, and alchemical explosive AoE bullets at LV 5 Alchemical Munitions.
+ * applies Recoil Compensation (faster cadence & heavier knockback),
+ * Tactical Speedloader (extended 6-round volleys & rapid reload),
+ * completely free of environmental explosions and fire damage to preserve colony architecture.
  */
 public class GunnerCombatAI extends RangeCombatAI {
 
@@ -116,7 +114,14 @@ public class GunnerCombatAI extends RangeCombatAI {
         return mult;
     }
 
-    private boolean hasExplosiveMunitions() {
+    private boolean hasRecoilCompensation() {
+        if (this.user == null) return false;
+        IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
+        if (colony == null) return false;
+        return colony.getResearchManager().getResearchEffects().getEffectStrength(EFFECT_GUNNER_ARMORY_4) > 0;
+    }
+
+    private boolean hasSpeedloader() {
         if (this.user == null) return false;
         IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
         if (colony == null) return false;
@@ -132,25 +137,40 @@ public class GunnerCombatAI extends RangeCombatAI {
     protected int getAttackDelay() {
         if (this.isReloading) {
             this.isReloading = false;
-            // LV 5 Master Marksman reduces reload delay by 20%
-            int reloadDelay = 50;
+
+            int reloadDelay = 50; // Base reload delay (2.5 seconds)
+
+            // LV 5 Tactical Speedloader halves reload time to 25 ticks
+            if (hasSpeedloader()) {
+                reloadDelay = 25;
+            }
+
+            // LV 5 Master Marksman reduces reload delay by an additional 20%
             if (this.user != null) {
                 IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
                 if (colony != null && colony.getResearchManager().getResearchEffects().getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) {
-                    reloadDelay = 40;
+                    reloadDelay = (int) (reloadDelay * 0.8F);
                 }
             }
-            return reloadDelay;
+
+            return Math.max(15, reloadDelay);
         }
 
         ItemStack weapon = this.user.getMainHandItem();
         String weaponName = weapon.getItem().toString().toLowerCase();
+        int cadence = 30; // Standard musket cadence
         if (weaponName.contains("clockwork") || weaponName.contains("revolver") || weaponName.contains("six")) {
-            return 15;
+            cadence = 15;
         } else if (weaponName.contains("blunderbuss")) {
-            return 25;
+            cadence = 25;
         }
-        return 30; // Standard musket cadence
+
+        // LV 4 Recoil Compensation reduces cadence delay between shots by 25%
+        if (hasRecoilCompensation()) {
+            cadence = (int) (cadence * 0.75F);
+        }
+
+        return Math.max(8, cadence);
     }
 
     @Override
@@ -167,7 +187,7 @@ public class GunnerCombatAI extends RangeCombatAI {
 
         boolean isBlunderbuss = weaponName.contains("blunderbuss");
         boolean isSniper = weaponName.contains("arquebus") || weaponName.contains("rifle");
-        boolean isExplosive = hasExplosiveMunitions();
+        boolean recoilReduced = hasRecoilCompensation();
 
         // Swing arm to simulate gun recoil
         this.user.swing(InteractionHand.MAIN_HAND);
@@ -180,7 +200,7 @@ public class GunnerCombatAI extends RangeCombatAI {
             // Gunshot sound
             serverLevel.playSound(null, this.user.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.6F, 1.8F);
 
-            // Muzzle flash particle at gun barrel
+            // Muzzle smoke and flash
             serverLevel.sendParticles(
                     ParticleTypes.CAMPFIRE_COSY_SMOKE,
                     citizenEye.x + direction.x * 0.9D,
@@ -211,28 +231,20 @@ public class GunnerCombatAI extends RangeCombatAI {
             // Apply Target Practice research damage multiplier
             float totalDamage = baseDamage * getDamageMultiplier();
 
-            // Apply bullet damage
+            // Apply bullet damage directly to target (100% safe, no terrain or AoE damage)
             target.hurt(this.user.damageSources().mobAttack(this.user), totalDamage);
 
-            // Push target back (bullet impact knockback)
-            target.knockback(0.35D, -direction.x, -direction.z);
-
-            // LV 5 Alchemical Munitions: Explosive AoE splash damage to nearby enemies
-            if (isExplosive) {
-                serverLevel.sendParticles(ParticleTypes.EXPLOSION, targetEye.x, targetEye.y, targetEye.z, 1, 0, 0, 0, 0);
-                serverLevel.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.7F, 1.4F);
-                AABB splashBox = target.getBoundingBox().inflate(2.5D);
-                List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, splashBox,
-                        e -> e != this.user && e != target && e.isAlive() && !e.isAlliedTo(this.user));
-                for (LivingEntity nearbyEnemy : nearby) {
-                    nearbyEnemy.hurt(this.user.damageSources().explosion(null, this.user), totalDamage * 0.5F);
-                    nearbyEnemy.setRemainingFireTicks(60);
-                }
-            }
+            // Knockback on target (Recoil Compensation increases stopping power)
+            double knockbackPower = recoilReduced ? 0.55D : 0.35D;
+            target.knockback(knockbackPower, -direction.x, -direction.z);
         }
 
         this.shotsFiredInVolley++;
-        if (this.shotsFiredInVolley >= 4) {
+
+        // Volley capacity: 6 rounds if Tactical Speedloader unlocked, else 4 rounds
+        int volleyCapacity = hasSpeedloader() ? 6 : 4;
+
+        if (this.shotsFiredInVolley >= volleyCapacity) {
             // Full reload cycle triggered for next shot
             this.isReloading = true;
             this.shotsFiredInVolley = 0;

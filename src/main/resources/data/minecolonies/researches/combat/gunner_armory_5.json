@@ -11,7 +11,7 @@
     },
     {
       "count": 16,
-      "item": "minecraft:blaze_rod"
+      "item": "minecraft:redstone_block"
     }
   ],
   "effects": [
@@ -20,7 +20,7 @@
       "level": 1
     }
   ],
-  "icon": "minecraft:fire_charge",
+  "icon": "minecraft:clock",
   "parentResearch": "minecolonies:combat/gunner_armory_4",
   "requirements": [
     {

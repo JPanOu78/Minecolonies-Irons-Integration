@@ -20,7 +20,7 @@
       "level": 1
     }
   ],
-  "icon": "minecraft:spyglass",
+  "icon": "minecraft:piston",
   "parentResearch": "minecolonies:combat/gunner_armory_3",
   "requirements": [
     {

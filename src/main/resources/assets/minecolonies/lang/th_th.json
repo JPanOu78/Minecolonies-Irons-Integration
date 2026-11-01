@@ -12,6 +12,8 @@
 
   "minecolonies:gunner.job.desc": "สวมใส่อาวุธปืนจาก Iron's Artifice ยิงกระสุนชุดรุนแรงระยะไกลและถอยรักษาระยะ",
   "minecolonies:mage.job.desc": "ควบคุมพลังเวทมนตร์จาก Iron's Spells ร่ายคาถาโจมตีและสนับสนุนเพื่อปกป้องเมือง",
+  "minecolonies_irons:gunner.skills.desc": "ส่งผลต่อความเร็วในการรีโหลดปืน ความต่อเนื่องในการยิง และความแม่นยำ",
+  "minecolonies_irons:mage.skills.desc": "ส่งผลต่อปริมาณมานา ความรุนแรงของคาถา และความเร็วในการร่ายเวท",
 
   "com.minecolonies.research.combat.gunner.name": "การฝึกซ้อมยิงปืนขั้นต้น",
   "com.minecolonies.research.combat.gunner.subtitle": "นำอาวุธดินปืนเข้ามาใช้ในการป้องกันอาณานิคม",
@@ -25,13 +27,13 @@
   "com.minecolonies.research.combat.gunner_armory_3.subtitle": "ประยุกต์ใช้กลไกความแม่นยำสูงและกระสุนพลังทำลายล้างหนัก",
   "com.minecolonies.research.effects.gunner_armory_3.description": "อนุญาตให้อนุญาตใช้อาวุธปืน Tier 3: Arquebus และ Clockwork Rifle",
 
-  "com.minecolonies.research.combat.gunner_armory_4.name": "วิศวกรรมความแม่นยำสูง",
-  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "ศูนย์เล็งที่ปรับแต่งอย่างละเอียดและลำกล้องปืนเสถียรภาพสูง",
-  "com.minecolonies.research.effects.gunner_armory_4.description": "เพิ่มประสิทธิภาพการเล็งยิงระยะไกลขั้นสูง",
+  "com.minecolonies.research.combat.gunner_armory_4.name": "การควบคุมแรงดีดและเสถียรภาพ",
+  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "ลดแรงกระแทกจากแรงดีดปืนเพื่อเพิ่มความเร็วในการยิงต่อเนื่องและแรงหยุดยั้ง",
+  "com.minecolonies.research.effects.gunner_armory_4.description": "ลดระยะเวลาหน่วงระหว่างการยิงลง -25% และเพิ่มแรงกระแทกกระเด็น (Knockback) ต่อเป้าหมาย",
 
-  "com.minecolonies.research.combat.gunner_armory_5.name": "กระสุนเล่นแร่แปรธาตุ",
-  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "บรรจุผงเพลิงและดินปืนเล่นแร่แปรธาตุเข้าสู่หัวกระสุนหนัก",
-  "com.minecolonies.research.effects.gunner_armory_5.description": "กระสุนปืนของ Gunner จะระเบิดกระจายสร้างความเสียหายเป็นวงกว้าง (AoE) และเผาไหม้ศัตรูโดยรอบ",
+  "com.minecolonies.research.combat.gunner_armory_5.name": "กลไกบรรจุกระสุนความเร็วสูง",
+  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "กลไกลูกโม่และซองกระสุนยุทธวิธีขั้นสูงเพื่อการยิงชุดต่อเนื่อง",
+  "com.minecolonies.research.effects.gunner_armory_5.description": "เพิ่มความจุการยิงชุดเป็น 6 นัดต่อเนื่อง และลดเวลารีโหลดลงครึ่งหนึ่ง ปลอดภัยต่อสิ่งก่อสร้างในเมือง 100%",
 
   "com.minecolonies.research.combat.gunner_practice_1.name": "การฝึกซ้อมความแม่นยำ I",
   "com.minecolonies.research.combat.gunner_practice_1.subtitle": "ฝึกฝนการเล็งที่มั่นคงและระเบียบการยิงชุด",
