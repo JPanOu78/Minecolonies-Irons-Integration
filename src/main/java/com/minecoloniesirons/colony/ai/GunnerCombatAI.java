@@ -16,21 +16,28 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 /**
  * Gunner Combat AI: Maintains tactical ranged distance (10-18 blocks),
- * equips and checks for Iron's Artifice firearms (Tier 1: Pistols/Revolvers, Tier 2: Muskets/Blunderbusses, Tier 3: Arquebus/Clockwork),
- * checks colony research unlock tiers, and applies Target Practice damage multipliers.
+ * equips and checks for Iron's Artifice firearms across Tier 1 to 5,
+ * checks colony research unlock tiers, applies Target Practice damage multipliers,
+ * faster reload at LV 5 Master Marksman, and alchemical explosive AoE bullets at LV 5 Alchemical Munitions.
  */
 public class GunnerCombatAI extends RangeCombatAI {
 
     public static final ResourceLocation EFFECT_GUNNER = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner");
     public static final ResourceLocation EFFECT_GUNNER_ARMORY_2 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_2");
     public static final ResourceLocation EFFECT_GUNNER_ARMORY_3 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_3");
+    public static final ResourceLocation EFFECT_GUNNER_ARMORY_4 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_4");
+    public static final ResourceLocation EFFECT_GUNNER_ARMORY_5 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_armory_5");
     public static final ResourceLocation EFFECT_GUNNER_DAMAGE_1 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_1");
     public static final ResourceLocation EFFECT_GUNNER_DAMAGE_2 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_2");
     public static final ResourceLocation EFFECT_GUNNER_DAMAGE_3 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_3");
+    public static final ResourceLocation EFFECT_GUNNER_DAMAGE_4 = ResourceLocation.fromNamespaceAndPath("minecolonies", "effects/gunner_damage_4");
 
     private int shotsFiredInVolley = 0;
     private boolean isReloading = false;
@@ -105,7 +112,15 @@ public class GunnerCombatAI extends RangeCombatAI {
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_1) > 0) mult += 0.10F;
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_2) > 0) mult += 0.10F;
         if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_3) > 0) mult += 0.10F;
+        if (rem.getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) mult += 0.10F; // LV 5: total +40%
         return mult;
+    }
+
+    private boolean hasExplosiveMunitions() {
+        if (this.user == null) return false;
+        IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
+        if (colony == null) return false;
+        return colony.getResearchManager().getResearchEffects().getEffectStrength(EFFECT_GUNNER_ARMORY_5) > 0;
     }
 
     @Override
@@ -117,7 +132,15 @@ public class GunnerCombatAI extends RangeCombatAI {
     protected int getAttackDelay() {
         if (this.isReloading) {
             this.isReloading = false;
-            return 50; // 2.5s reload delay after full volley
+            // LV 5 Master Marksman reduces reload delay by 20%
+            int reloadDelay = 50;
+            if (this.user != null) {
+                IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
+                if (colony != null && colony.getResearchManager().getResearchEffects().getEffectStrength(EFFECT_GUNNER_DAMAGE_4) > 0) {
+                    reloadDelay = 40;
+                }
+            }
+            return reloadDelay;
         }
 
         ItemStack weapon = this.user.getMainHandItem();
@@ -144,6 +167,7 @@ public class GunnerCombatAI extends RangeCombatAI {
 
         boolean isBlunderbuss = weaponName.contains("blunderbuss");
         boolean isSniper = weaponName.contains("arquebus") || weaponName.contains("rifle");
+        boolean isExplosive = hasExplosiveMunitions();
 
         // Swing arm to simulate gun recoil
         this.user.swing(InteractionHand.MAIN_HAND);
@@ -192,6 +216,19 @@ public class GunnerCombatAI extends RangeCombatAI {
 
             // Push target back (bullet impact knockback)
             target.knockback(0.35D, -direction.x, -direction.z);
+
+            // LV 5 Alchemical Munitions: Explosive AoE splash damage to nearby enemies
+            if (isExplosive) {
+                serverLevel.sendParticles(ParticleTypes.EXPLOSION, targetEye.x, targetEye.y, targetEye.z, 1, 0, 0, 0, 0);
+                serverLevel.playSound(null, target.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 0.7F, 1.4F);
+                AABB splashBox = target.getBoundingBox().inflate(2.5D);
+                List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(LivingEntity.class, splashBox,
+                        e -> e != this.user && e != target && e.isAlive() && !e.isAlliedTo(this.user));
+                for (LivingEntity nearbyEnemy : nearby) {
+                    nearbyEnemy.hurt(this.user.damageSources().explosion(null, this.user), totalDamage * 0.5F);
+                    nearbyEnemy.setRemainingFireTicks(60);
+                }
+            }
         }
 
         this.shotsFiredInVolley++;

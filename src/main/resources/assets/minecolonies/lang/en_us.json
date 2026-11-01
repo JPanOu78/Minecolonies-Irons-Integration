@@ -25,6 +25,14 @@
   "com.minecolonies.research.combat.gunner_armory_3.subtitle": "Harness high-precision mechanisms and devastating munitions.",
   "com.minecolonies.research.effects.gunner_armory_3.description": "Permits Tier 3 firearms: Arquebuses and Clockwork Rifles.",
 
+  "com.minecolonies.research.combat.gunner_armory_4.name": "Precision Engineering",
+  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "Calibrated iron sights and stabilized barrels.",
+  "com.minecolonies.research.effects.gunner_armory_4.description": "Enables advanced long-range firearm calibration and stabilization.",
+
+  "com.minecolonies.research.combat.gunner_armory_5.name": "Alchemical Munitions",
+  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "Incendiary and explosive charges infused into heavy shot.",
+  "com.minecolonies.research.effects.gunner_armory_5.description": "Gunner shots trigger explosive splash damage (AoE) and ignite surrounding enemies.",
+
   "com.minecolonies.research.combat.gunner_practice_1.name": "Target Practice I",
   "com.minecolonies.research.combat.gunner_practice_1.subtitle": "Train marksmen in steady aiming and volley discipline.",
   "com.minecolonies.research.effects.gunner_damage_1.description": "Increases Gunner firearm damage by +10%.",
@@ -36,6 +44,10 @@
   "com.minecolonies.research.combat.gunner_practice_3.name": "Target Practice III",
   "com.minecolonies.research.combat.gunner_practice_3.subtitle": "Master marksmen capable of lethal precision under fire.",
   "com.minecolonies.research.effects.gunner_damage_3.description": "Increases Gunner firearm damage by an additional +10% (+30% total).",
+
+  "com.minecolonies.research.combat.gunner_practice_4.name": "Master Marksman",
+  "com.minecolonies.research.combat.gunner_practice_4.subtitle": "Supreme gunners capable of lightning-fast reloading and lethal accuracy.",
+  "com.minecolonies.research.effects.gunner_damage_4.description": "Increases Gunner firearm damage by +10% (+40% total) and reduces volley reload delay by -20%.",
 
   "com.minecolonies.research.combat.mage.name": "Arcane Initiation",
   "com.minecolonies.research.combat.mage.subtitle": "Train colony guards in the arts of spellcasting.",

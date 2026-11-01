@@ -1,0 +1,35 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 256,
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/gunner_armory_5",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:fire_charge",
+  "parentResearch": "minecolonies:combat/gunner_armory_4",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 5
+    }
+  ],
+  "researchLevel": 5,
+  "sortOrder": 1,
+  "subtitle": "com.minecolonies.research.combat.gunner_armory_5.subtitle"
+}

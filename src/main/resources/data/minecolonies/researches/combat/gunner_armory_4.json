@@ -1,0 +1,35 @@
+{
+  "branch": "minecolonies:combat",
+  "costs": [
+    {
+      "count": 128,
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:gold_block"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:diamond"
+    }
+  ],
+  "effects": [
+    {
+      "id": "minecolonies:effects/gunner_armory_4",
+      "level": 1
+    }
+  ],
+  "icon": "minecraft:spyglass",
+  "parentResearch": "minecolonies:combat/gunner_armory_3",
+  "requirements": [
+    {
+      "type": "minecolonies:building",
+      "building": "minecolonies:guardtower",
+      "level": 4
+    }
+  ],
+  "researchLevel": 4,
+  "sortOrder": 1,
+  "subtitle": "com.minecolonies.research.combat.gunner_armory_4.subtitle"
+}

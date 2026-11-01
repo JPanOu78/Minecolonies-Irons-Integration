@@ -25,6 +25,14 @@
   "com.minecolonies.research.combat.gunner_armory_3.subtitle": "ประยุกต์ใช้กลไกความแม่นยำสูงและกระสุนพลังทำลายล้างหนัก",
   "com.minecolonies.research.effects.gunner_armory_3.description": "อนุญาตให้อนุญาตใช้อาวุธปืน Tier 3: Arquebus และ Clockwork Rifle",
 
+  "com.minecolonies.research.combat.gunner_armory_4.name": "วิศวกรรมความแม่นยำสูง",
+  "com.minecolonies.research.combat.gunner_armory_4.subtitle": "ศูนย์เล็งที่ปรับแต่งอย่างละเอียดและลำกล้องปืนเสถียรภาพสูง",
+  "com.minecolonies.research.effects.gunner_armory_4.description": "เพิ่มประสิทธิภาพการเล็งยิงระยะไกลขั้นสูง",
+
+  "com.minecolonies.research.combat.gunner_armory_5.name": "กระสุนเล่นแร่แปรธาตุ",
+  "com.minecolonies.research.combat.gunner_armory_5.subtitle": "บรรจุผงเพลิงและดินปืนเล่นแร่แปรธาตุเข้าสู่หัวกระสุนหนัก",
+  "com.minecolonies.research.effects.gunner_armory_5.description": "กระสุนปืนของ Gunner จะระเบิดกระจายสร้างความเสียหายเป็นวงกว้าง (AoE) และเผาไหม้ศัตรูโดยรอบ",
+
   "com.minecolonies.research.combat.gunner_practice_1.name": "การฝึกซ้อมความแม่นยำ I",
   "com.minecolonies.research.combat.gunner_practice_1.subtitle": "ฝึกฝนการเล็งที่มั่นคงและระเบียบการยิงชุด",
   "com.minecolonies.research.effects.gunner_damage_1.description": "เพิ่มพลังโจมตีของพลปืนขึ้น +10%",
@@ -36,6 +44,10 @@
   "com.minecolonies.research.combat.gunner_practice_3.name": "การฝึกซ้อมความแม่นยำ III",
   "com.minecolonies.research.combat.gunner_practice_3.subtitle": "พลแม่นปืนระดับยอดฝีมือ สังหารเป้าหมายเด็ดขาดภายใต้สมรภูมิ",
   "com.minecolonies.research.effects.gunner_damage_3.description": "เพิ่มพลังโจมตีของพลปืนขึ้นอีก +10% (รวม +30%)",
+
+  "com.minecolonies.research.combat.gunner_practice_4.name": "สุดยอดพลแม่นปืน",
+  "com.minecolonies.research.combat.gunner_practice_4.subtitle": "พลแม่นปืนระดับตำนาน บรรจุกระสุนรวดเร็วดั่งสายฟ้าและยิงสังหารแม่นยำสูงสุด",
+  "com.minecolonies.research.effects.gunner_damage_4.description": "เพิ่มพลังโจมตีของพลปืนขึ้นอีก +10% (รวม +40%) และลดระยะเวลารีโหลดกระสุนลง -20%",
 
   "com.minecolonies.research.combat.mage.name": "การฝึกศาสตร์เวทมนตร์ขั้นต้น",
   "com.minecolonies.research.combat.mage.subtitle": "ฝึกฝนทหารยามในศาสตร์แห่งการร่ายคาถา",
