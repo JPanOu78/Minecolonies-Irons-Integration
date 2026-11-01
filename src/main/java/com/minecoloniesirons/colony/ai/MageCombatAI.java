@@ -2,6 +2,7 @@ package com.minecoloniesirons.colony.ai;
 
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.ITickRateStateMachine;
+import com.minecolonies.api.equipment.registry.EquipmentTypeEntry;
 import com.minecolonies.api.research.IResearchEffectManager;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.ai.workers.guard.RangeCombatAI;
@@ -41,6 +42,11 @@ public class MageCombatAI extends RangeCombatAI {
     }
 
     @Override
+    public EquipmentTypeEntry getWeaponType() {
+        return ModIronsEquipmentTypes.SPELL_FOCUS.get();
+    }
+
+    @Override
     public boolean canAttack() {
         if (this.user == null || !this.user.isAlive()) {
             return false;
@@ -49,7 +55,11 @@ public class MageCombatAI extends RangeCombatAI {
         // Auto-equip spellcasting focus or spellbook from inventory matching unlocked research tier
         equipMageGear();
 
-        return true;
+        ItemStack main = this.user.getMainHandItem();
+        ItemStack off = this.user.getOffhandItem();
+
+        return (!main.isEmpty() && ModIronsEquipmentTypes.isSpellItem(main))
+                || (!off.isEmpty() && ModIronsEquipmentTypes.isSpellItem(off));
     }
 
     public void equipMageGear() {
@@ -97,7 +107,7 @@ public class MageCombatAI extends RangeCombatAI {
         }
     }
 
-    private int getMaxAllowedTier() {
+    public int getMaxAllowedTier() {
         if (this.user == null) return 1;
         IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
         if (colony == null) return 1;

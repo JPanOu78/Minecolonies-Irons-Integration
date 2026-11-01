@@ -2,6 +2,7 @@ package com.minecoloniesirons.colony.ai;
 
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.ITickRateStateMachine;
+import com.minecolonies.api.equipment.registry.EquipmentTypeEntry;
 import com.minecolonies.api.research.IResearchEffectManager;
 import com.minecolonies.core.entity.ai.workers.guard.AbstractEntityAIGuard;
 import com.minecolonies.core.entity.ai.workers.guard.RangeCombatAI;
@@ -20,7 +21,8 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Gunner Combat AI: Maintains tactical ranged distance (10-18 blocks),
- * equips and checks for Iron's Artifice firearms across Tier 1 to 5,
+ * equips and checks for Iron's Artifice firearms across Tier 1 to 3 according to research unlocks,
+ * requires and consumes ammunition (bullets),
  * applies Recoil Compensation (faster cadence & heavier knockback),
  * Tactical Speedloader (extended 6-round volleys & rapid reload),
  * completely free of environmental explosions and fire damage to preserve colony architecture.
@@ -45,6 +47,11 @@ public class GunnerCombatAI extends RangeCombatAI {
     }
 
     @Override
+    public EquipmentTypeEntry getWeaponType() {
+        return ModIronsEquipmentTypes.GUN.get();
+    }
+
+    @Override
     public boolean canAttack() {
         if (this.user == null || !this.user.isAlive()) {
             return false;
@@ -53,7 +60,39 @@ public class GunnerCombatAI extends RangeCombatAI {
         // Auto-equip firearm according to unlocked research tier
         equipFirearmGear();
 
-        return true;
+        // Must have ammunition to engage in ranged combat
+        return hasAmmo();
+    }
+
+    /**
+     * Checks if citizen currently carries firearm ammunition in their inventory.
+     */
+    public boolean hasAmmo() {
+        if (this.user == null) return false;
+        var inv = this.user.getInventoryCitizen();
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && ModIronsEquipmentTypes.isAmmoItem(stack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Consumes 1 bullet from citizen inventory when a shot is fired.
+     */
+    public boolean consumeBullet() {
+        if (this.user == null) return false;
+        var inv = this.user.getInventoryCitizen();
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && ModIronsEquipmentTypes.isAmmoItem(stack)) {
+                stack.shrink(1);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void equipFirearmGear() {
@@ -89,7 +128,7 @@ public class GunnerCombatAI extends RangeCombatAI {
         }
     }
 
-    private int getMaxAllowedTier() {
+    public int getMaxAllowedTier() {
         if (this.user == null) return 1;
         IColony colony = this.user.getCitizenColonyHandler().getColonyOrRegister();
         if (colony == null) return 1;
@@ -176,6 +215,11 @@ public class GunnerCombatAI extends RangeCombatAI {
     @Override
     protected void doAttack(LivingEntity target) {
         if (target == null || !target.isAlive() || this.user == null) {
+            return;
+        }
+
+        // Must consume ammunition to fire
+        if (!consumeBullet()) {
             return;
         }
 
