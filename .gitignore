@@ -16,6 +16,7 @@ bin/
 .project
 .classpath
 .settings/
+.eclipse/
 
 # OS
 .DS_Store
@@ -27,12 +28,17 @@ run/
 logs/
 *.log
 
-# Java
+# Java & Decompiled References
 *.class
 *.jar
 *.war
 *.ear
+extracted_assets/
+.references/
 
-# Antigravity
+# AI Agents & Search Index
 .gemini/
-
+.agents/
+.cache/
+.mcp.json
+*.bak
